@@ -4,7 +4,7 @@ var _$samsara = require( "./app/samsara.js" )
 
 
 var Vue = require( 'vue' )
-Vue.config.debug = true
+Vue.config.debug = false
 var VueRouter = require( "vue-router" )
 var VueTouch = require( 'vue-touch' )
 Vue.use( VueRouter )
@@ -138,6 +138,18 @@ VueTouch.registerCustomEvent( 'taphelphold', {
 var _$App = Vue.extend( {
 	ready: function () {
 		console.warn( 'SREADDYYYY' )
+
+		var arr = [
+			'register',
+			'about',
+			'login'
+		]
+
+		setTimeout( function () {
+			_$router.go( {
+				name: 'public.' + arr[ _.random( 0, 2 ) ]
+			} )
+		}, 2000 )
 	}
 } )
 
@@ -163,7 +175,7 @@ _$router.beforeEach( function ( trans ) {
 	}
 
 	window.plugins.nativepagetransitions.slide( {
-		direction: 'up'
+		direction: 'left'
 	}, function () {
 		trans.next()
 	} )
@@ -223,6 +235,11 @@ var ready = function () {
 		window.plugins.nativepagetransitions.globalOptions.androiddelay = -1
 		window.plugins.nativepagetransitions.globalOptions.winphonedelay = -1
 		window.plugins.nativepagetransitions.globalOptions.slowdownfactor = 3
+
+		if ( device.platform == "iOS" ) {
+			var el = document.getElementById( 'app' )
+			el.style.top = '20px'
+		}
 	}
 
 	_$samsara.init()

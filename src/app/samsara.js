@@ -4,6 +4,7 @@ var _ = require( 'lodash' )
 
 var Surface = require( 'samsarajs' ).DOM.Surface
 var Context = require( 'samsarajs' ).DOM.Context
+var Transform = require( 'samsarajs' ).Core.Transform
 
 
 
@@ -25,8 +26,13 @@ _$samsara.init = function () {
 
 	var context = new Context()
 
-	context.add( surface )
-	context.mount( document.querySelector( '#samsara' ) )
+	context.add( {
+		transform: Transform.translate( [ 100, 100, 99 ] )
+	} ).add( surface )
+
+	// context.mount( document.querySelector( '#samsara_div' ) )
+	context.mount()
+
 }
 
 
@@ -78,3 +84,4 @@ module.exports = _$samsara
 
 
 //
+

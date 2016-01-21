@@ -1,0 +1,80 @@
+/* Copyright © 2015 David Valdman */
+
+#samsara_div,
+.samsara-context,
+.samsara-surface {
+    z-index: 99;
+    position: absolute;
+}
+
+body {
+    position: absolute;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-perspective: 0;
+    perspective: none;
+    overflow: hidden;
+}
+
+
+/*body {
+    position: absolute;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-perspective: 0;
+    perspective: none;
+    overflow: hidden;
+}*/
+
+
+/*.samsara-context,
+.samsara-surface {
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}*/
+
+
+/*.samsara-context {
+    z-index: 99;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    width: auto;
+    height: auto;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+}
+
+.samsara-container {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.samsara-surface {
+    z-index: 99;
+    position: absolute;
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.samsara-scrollable {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}*/
