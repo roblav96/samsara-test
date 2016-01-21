@@ -1,0 +1,11 @@
+{
+	"name": "desktop",
+	"app_id": "",
+	"documentRoot": "www",
+	"createDocumentRoot": "www",
+	"watchPatterns": [
+		"www/build.js",
+		"www/css/convoy.css",
+		"www/index.html"
+	]
+}

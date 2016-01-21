@@ -1,0 +1,11 @@
+{
+	"name": "HelloIonic",
+	"private": "true",
+	"dependencies": {
+		"forge": "latest",
+		"ionicons": "latest",
+		"materialize": "latest",
+		"velocity": "latest"
+	}
+}
+
