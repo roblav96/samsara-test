@@ -4,8 +4,13 @@
 	"dependencies": {
 		"forge": "latest",
 		"ionicons": "latest",
-		"materialize": "latest",
-		"velocity": "latest"
+		"lodash": "latest",
+		"turf": "latest",
+		"bluebird": "latest",
+		"lokijs": "latest",
+		"lockr": "latest",
+		"socketcluster-client": "latest",
+		"smartcrop": "latest"
 	}
 }
 
