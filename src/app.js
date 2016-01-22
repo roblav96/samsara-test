@@ -136,6 +136,11 @@ VueTouch.registerCustomEvent( 'taphelphold', {
 } )
 
 var _$App = Vue.extend( {
+	data: function () {
+		var data = {}
+		data.idk = "butt munch"
+		return data
+	},
 	ready: function () {
 		console.warn( 'SREADDYYYY' )
 

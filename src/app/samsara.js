@@ -17,7 +17,7 @@ var _$samsara = {}
 
 _$samsara.init = function () {
 	var surface = new Surface( {
-		content: 'hello', // innerHTML
+		content: 'hello {{idk}}', // innerHTML
 		size: [ 100, 100 ], // [width, height]
 		properties: { // style properties
 			background: 'red'
@@ -30,8 +30,8 @@ _$samsara.init = function () {
 		transform: Transform.translate( [ 100, 100, 99 ] )
 	} ).add( surface )
 
-	// context.mount( document.querySelector( '#samsara_div' ) )
-	context.mount()
+	context.mount( document.querySelector( '#app' ) )
+	// context.mount()
 
 }
 

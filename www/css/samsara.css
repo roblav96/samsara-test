@@ -1,34 +1,50 @@
 /* Copyright © 2015 David Valdman */
 
-#samsara_div,
+/*#samsara_div,
 .samsara-context,
 .samsara-surface {
     z-index: 99;
     position: absolute;
-}
-
-body {
-    position: absolute;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-perspective: 0;
-    perspective: none;
-    overflow: hidden;
-}
-
-
-/*body {
-    position: absolute;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-perspective: 0;
-    perspective: none;
-    overflow: hidden;
 }*/
+
+.samsara-context {
+    /*z-index: 99;*/
+    /*position: absolute;*/
+/*    width: 100%;
+    height: 100%;*/
+    /*width: auto;*/
+    /*height: auto;*/
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.samsara-container {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.samsara-surface {
+    z-index: 99;
+    position: absolute;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-backface-visibility: visible;
+    -moz-backface-visibility: visible;
+    backface-visibility: visible;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.samsara-scrollable {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
 
 
 /*.samsara-context,
@@ -41,40 +57,3 @@ body {
     padding: 0px;
 }*/
 
-
-/*.samsara-context {
-    z-index: 99;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    width: auto;
-    height: auto;
-    transform-style: preserve-3d;
-    -webkit-transform-style: preserve-3d;
-}
-
-.samsara-container {
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-}
-
-.samsara-surface {
-    z-index: 99;
-    position: absolute;
-    -webkit-transform-origin: 0% 0%;
-    transform-origin: 0% 0%;
-    -webkit-backface-visibility: visible;
-    backface-visibility: visible;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-tap-highlight-color: transparent;
-    pointer-events: auto;
-    z-index: 1;
-}
-
-.samsara-scrollable {
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    overflow-scrolling: touch;
-}*/
