@@ -25,13 +25,16 @@ _$samsara.init = function () {
 	} )
 
 	var context = new Context()
+	context.setPerspective( 1000, {
+		duration: 5000
+	} )
 
 	context.add( {
-		transform: Transform.translate( [ 100, 100, 99 ] )
+		transform: Transform.translate( [ 100, 100, 0 ] )
 	} ).add( surface )
 
 	context.mount( document.querySelector( '#app' ) )
-	// context.mount()
+		// context.mount()
 
 }
 
