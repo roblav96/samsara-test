@@ -6,6 +6,7 @@
 	"watchPatterns": [
 		"www/build.js",
 		"www/css/convoy.css",
+		"www/css/samsara.css",
 		"www/index.html"
 	]
 }

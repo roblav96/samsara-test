@@ -150,11 +150,11 @@ var _$App = Vue.extend( {
 			'login'
 		]
 
-		setTimeout( function () {
-			_$router.go( {
-				name: 'public.' + arr[ _.random( 0, 2 ) ]
-			} )
-		}, 2000 )
+		// setTimeout( function () {
+		// 	_$router.go( {
+		// 		name: 'public.' + arr[ _.random( 0, 2 ) ]
+		// 	} )
+		// }, 2000 )
 	}
 } )
 
