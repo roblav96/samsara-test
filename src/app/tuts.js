@@ -92,6 +92,13 @@ function Tuts( context ) {
 			return
 		}
 
+		if ( now == true ) {
+			this.opa.set( 0 )
+			this.scale.set( 0.5 )
+			this.y.set( -this.wHeight )
+			return
+		}
+
 		this.showing = true
 
 		var duration = 500

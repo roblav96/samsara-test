@@ -15,18 +15,20 @@ var Accumulator = Samsara.Streams.Accumulator
 
 
 
-function mMenu( context ) {
-	this.wWidth = window.innerWidth
-	this.halfwWidth = this.wWidth * 0.5
-	this.wHeight = window.innerHeight
-	this.halfwHeight = this.wHeight * 0.5
+function sMenu( context ) {
+	// this.wWidth = window.innerWidth
+	// this.halfwWidth = this.wWidth * 0.5
+	// this.wHeight = window.innerHeight
+	// this.halfwHeight = this.wHeight * 0.5
+
+	const wWidth = window.innerWidth
 
 	this.index = 301
 	this.shown = false
 	this.showing = false
 	this.temp = [ {}, {}, {}, {}, {}, {}, {}, {} ]
 
-	this.width = _.mathClamp( 250, 0, this.wWidth * 0.8 )
+	this.width = _.mathClamp( 250, 0, wWidth * 0.8 )
 	this.height = 50
 
 	this.surfs = []
@@ -40,7 +42,7 @@ function mMenu( context ) {
 	this.y = new Transitionable( 0 )
 
 	this.yTrans = this.y.map( function ( v ) {
-		return Transform.translate( [ this.wWidth * 0.5, v + 50 ] )
+		return Transform.translate( [ wWidth * 0.5, v + 50 ] )
 	}.bind( this ) )
 
 	this.touched = function ( i ) {
@@ -61,7 +63,8 @@ function mMenu( context ) {
 
 	_.forEach( this.temp, function ( v, i ) {
 		this.nodes[ i ] = new ContainerSurface( {
-			size: [ this.width, this.height ]
+			size: [ this.width, this.height ],
+			origin: [ 0.5, 1 ]
 		} )
 
 		this.surfs[ i ] = new Surface( {
@@ -95,7 +98,7 @@ function mMenu( context ) {
 
 		this.showing = true
 
-		_$utils.events.emit( 'famous.mMenu.close' )
+		_$utils.events.emit( 'samsara.mMenu.close' )
 
 		var i, len = 8
 		for ( i = 0; i < len; i++ ) {
@@ -112,10 +115,11 @@ function mMenu( context ) {
 					this.temp[ i ].click = temp[ i ]._click
 				}
 
-			} else {
-				this.surfs[ i ].setContent( '<ul class="list"><li class="item">' + i + '</li></ul>' )
-				this.temp[ i ].click = null
 			}
+			//  else {
+			// 	// this.surfs[ i ].setContent( '<ul class="list"><li class="item">' + i + '</li></ul>' )
+			// 	this.temp[ i ].click = null
+			// }
 		}
 
 		Timer.after( function () {
@@ -128,7 +132,7 @@ function mMenu( context ) {
 			}.bind( this ) )
 		}.bind( this ), 2 )
 
-	}
+	}.bind( this )
 
 	this.close = function ( now ) {
 		if ( this.shown == false ) {
@@ -139,6 +143,7 @@ function mMenu( context ) {
 
 		if ( now == true ) {
 			this.y.set( 0 )
+			this.y.reset( 0 )
 			this.showing = false
 			this.shown = false
 			return
@@ -148,19 +153,21 @@ function mMenu( context ) {
 			duration: 250,
 			curve: Curves.easeIn
 		}, function () {
-			this.shown = false
-			this.showing = false
-
 			Timer.after( function () {
 				var i, len = this.temp.length
 				for ( i = 0; i < len; i++ ) {
-					this.surfs[ i ].setContent( '<ul class="list"><li class="item">' + i + '</li></ul>' )
+					this.surfs[ i ].setContent( '' )
 					this.temp[ i ].click = null
 				}
+
+			this.y.reset( 0 )
+			this.shown = false
+			this.showing = false
+
 			}.bind( this ), 10 )
 		}.bind( this ) )
 
-	}
+	}.bind( this )
 
 
 
@@ -225,7 +232,7 @@ function mMenu( context ) {
 
 
 
-module.exports = mMenu
+module.exports = sMenu
 
 //
 

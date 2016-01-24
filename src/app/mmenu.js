@@ -6,150 +6,105 @@ var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
 var ContainerSurface = Samsara.DOM.ContainerSurface
 var Transform = Samsara.Core.Transform
+var LayoutNode = Samsara.Core.LayoutNode
+var View = Samsara.Core.View
 var MouseInput = Samsara.Inputs.MouseInput
 var TouchInput = Samsara.Inputs.TouchInput
 var SequentialLayout = Samsara.Layouts.SequentialLayout
 var Transitionable = Samsara.Core.Transitionable
 var Accumulator = Samsara.Streams.Accumulator
+var mMenu_SURF = require( './mmenu-surf.js' )
 
 
 
-function mMenu( context ) {
-	this.wWidth = window.innerWidth
-	this.halfwWidth = this.wWidth * 0.5
-	this.wHeight = window.innerHeight
-	this.halfwHeight = this.wHeight * 0.5
+module.exports = View.extend( {
 
-	this.index = 401
-	this.width = 100
-	this.height = 80
-	this.shown = false
-	this.showing = false
-	this.activeClass = ''
+	initialize: function () {
+		this.wWidth = window.innerWidth
+		this.wHeight = window.innerHeight
 
-	// this.temp = [ {
-	// 	text: "S.O.S",
-	// 	icon: "ion-help-buoy",
-	// }, {
-	// 	text: "Map",
-	// 	icon: "ion-map",
-	// 	state: "map.index",
-	// 	activeState: 'map',
-	// }, {
-	// 	text: "My Convoy",
-	// 	icon: "ion-person-stalker",
-	// 	state: "contacts.index",
-	// 	activeState: 'contacts',
-	// }, {
-	// 	text: "Activities",
-	// 	icon: "ion-ios-pulse-strong",
-	// 	state: "activity.index",
-	// 	activeState: 'activity',
-	// }, {
-	// 	text: "Settings",
-	// 	icon: "ion-settings",
-	// 	state: "settings.index",
-	// 	activeState: 'settings',
-	// } ]
+		this.index = 401
+		this.width = 100
+		this.height = 80
+		this.shown = false
+		this.showing = false
+		this.activeClass = ''
 
-	this.temp = {}
-	this.temp[ 'help' ] = {
-		text: "S.O.S",
-		icon: "ion-help-buoy",
-		index: 0
-	}
-	this.temp[ 'map' ] = {
-		text: "Map",
-		icon: "ion-map",
-		state: "map.index",
-		activeState: 'map',
-		index: 1
-	}
-	this.temp[ 'contacts' ] = {
-		text: "My Convoy",
-		icon: "ion-person-stalker",
-		state: "contacts.index",
-		activeState: 'contacts',
-		index: 2
-	}
-	this.temp[ 'activity' ] = {
-		text: "Activities",
-		icon: "ion-ios-pulse-strong",
-		state: "activity.index",
-		activeState: 'activity',
-		index: 3
-	}
-	this.temp[ 'settings' ] = {
-		text: "Settings",
-		icon: "ion-settings",
-		state: "settings.index",
-		activeState: 'settings',
-		index: 4
-	}
+		this.temp = [ {
+			text: "S.O.S",
+			icon: "ion-help-buoy",
+			activeState: 'help',
+			index: 0
+		}, {
+			text: "Map",
+			icon: "ion-map",
+			state: "map.index",
+			activeState: 'map',
+			index: 1
+		}, {
+			text: "My Convoy",
+			icon: "ion-person-stalker",
+			state: "contacts.index",
+			activeState: 'contacts',
+			index: 2
+		}, {
+			text: "Activities",
+			icon: "ion-ios-pulse-strong",
+			state: "activity.index",
+			activeState: 'activity',
+			index: 3
+		}, {
+			text: "Settings",
+			icon: "ion-settings",
+			state: "settings.index",
+			activeState: 'settings',
+			index: 4
+		} ]
 
-	this.surfs = []
-	this.nodes = []
-	this.scales = []
-	this.scalesTrans = []
-	this.layout = new SequentialLayout( {
-		direction: 1
-	} )
-
-	this.x = new Transitionable( -100 )
-	this.opa = new Transitionable( 0 )
-
-	this.xTrans = this.x.map( function ( v ) {
-		return Transform.translate( [ v, -449 ] )
-	} )
-
-	this.touched = function ( key, index ) {
-		if ( key == 'help' ) {
-			// _$router.app.openSOS()
-			console.warn( '_$router.app.openSOS()' )
-			return
-		}
-		this.hrefPrep( key, index )
-	}
-
-	_.forEach( this.temp, function ( v, k ) {
-		var i = v.index
-
-		this.nodes[ i ] = new ContainerSurface( {
-			size: [ this.width, this.height ]
+		this.surfs = []
+		this.layout = new SequentialLayout( {
+			direction: 1
 		} )
 
-		var content = '<div class="list tabs side-tab tabs-icon-top"><li class="item tab-item"><i class="icon ' + v.icon + '"></i>' + v.text + '</li></div>'
-		if ( k == "help" ) {
-			content = '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ' + v.icon + '"></i>' + v.text + '</li></div>'
+		this.x = new Transitionable( -100 )
+		this.opa = new Transitionable( 0 )
+
+		this.xTrans = this.x.map( function ( v ) {
+			var val = v
+			return Transform.translate( [ val, -449 ] )
+		} )
+
+		var i, len = this.temp.length
+		for ( i = 0; i < len; i++ ) {
+			this.surfs[ i ] = new mMenu_SURF( {
+				theTemp: this.temp[ i ],
+				temp: this.temp
+			} )
 		}
 
-		this.surfs[ i ] = new Surface( {
-			content: content,
-			size: [ this.width, this.height ]
-		} )
-
-		this.surfs[ i ].on( 'touchstart', function () {
-			this.touched( k, i )
-		}.bind( this ) )
-
-		this.scales[ i ] = new Transitionable( 1 )
-		this.scalesTrans[ i ] = this.scales[ i ].map( function ( value ) {
-			return Transform.scale( [ value, 1 ] )
-		} )
-
-		this.nodes[ i ].add( {
-			transform: this.scalesTrans[ i ]
-		} ).add( this.surfs[ i ] )
-
-	}.bind( this ) )
-
-	this.layout.addItems( this.nodes )
+		this.layout.addItems( this.surfs )
 
 
 
 
 
-	this.toggle = function () {
+
+
+		this.add( {
+			align: [ 0, 1 ],
+			transform: this.xTrans,
+			opacity: this.opa
+		} ).add( this.layout )
+
+
+
+
+
+	},
+
+
+
+	toggle: function () {
 		if ( this.showing == true ) {
 			return
 		}
@@ -159,9 +114,11 @@ function mMenu( context ) {
 		} else {
 			this.open()
 		}
-	}
+	},
 
-	this.open = function () {
+
+
+	open: function () {
 		if ( this.shown == true ) {
 			return
 		}
@@ -179,9 +136,12 @@ function mMenu( context ) {
 			this.shown = true
 			this.showing = false
 		}.bind( this ) )
-	}.bind( this )
 
-	this.close = function ( now ) {
+	},
+
+
+
+	close: function ( now ) {
 		if ( this.shown == false ) {
 			return
 		}
@@ -190,7 +150,9 @@ function mMenu( context ) {
 
 		if ( now == true ) {
 			this.opa.set( 0 )
+			this.opa.reset( 0 )
 			this.x.set( -100 )
+			this.x.reset( -100 )
 			this.showing = false
 			this.shown = false
 			return
@@ -207,108 +169,77 @@ function mMenu( context ) {
 			this.shown = false
 			this.showing = false
 		}.bind( this ) )
-	}.bind( this )
-
-
-
-	this.hrefPrep = function ( key, index ) {
-		if ( _$router._currentRoute.name == this.temp[ key ].state ) {
-			_$utils.events.emit( 'samsara.fixMenus' )
-			return
-		}
-
-		var curName = _$router._currentRoute.name.split( '.' )[ 0 ]
-		if ( curName == 'public' ) {
-			_$utils.events.emit( 'samsara.fixMenus' )
-			return
-		}
-
-		var iFrom = this.temp[ curName ].index
-		var direct = 'left'
-		if ( iFrom > index ) {
-			direct = 'down'
-		} else if ( iFrom < index ) {
-			direct = 'up'
-		}
-
-		this.scales[ index ].set( 1.25 )
-
-		console.log( 'direct >', direct )
-		console.log( 'this.temp[ key ].state >', this.temp[ key ].state )
-		return
-
-		_$router.go( {
-			name: this.temp[ key ].state,
-			query: {
-				direction: direct
-			}
-		} )
-		
-		_.delay( function () {
-			this.scales[ index ].set( 1 )
-		}.bind( this ), 10 )
-
 	}
 
 
 
-	this.setActiveClass = function ( toState ) {
-		var ts = toState.split( '.' )[ 0 ]
-
-		if ( ts != this.activeClass ) {
-			this.activeClass = ts
-
-			if ( this.activeClass == 'public' ) {
-				return
-			}
-
-			_.forEach( this.surfs, function ( v, i ) {
-				this.surfs[ i ].surf.removeClass( 'mMenu-active' )
-			}.bind( this ) )
-
-			this.surfs[ this.activeClass ].surf.addClass( 'mMenu-active' )
-		}
-	}
-
-
-
-	this.sosBarHeader = function ( drill ) {
-		if ( C_EMERGENCY == true ) {
-			this.surfs[ 0 ].addClass( 'mMenu-emergency' )
-			var str = "ACTIVE"
-			if ( drill == true ) {
-				str = str + "<br>DRILL"
-			}
-			this.surfs[ 0 ].setContent( '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ion-help-buoy"></i>' + str + '</li></div>' )
-			return
-		}
-		this.surfs[ 0 ].removeClass( 'mMenu-emergency' )
-		this.surfs[ 0 ].setContent( '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ion-help-buoy"></i>S.O.S</li></div>' )
-	}.bind( this )
-
-	this.activities = function ( bool ) {
-		if ( bool == true ) {
-			this.surfs[ 3 ].addClass( 'mMenu-balanced' )
-		} else {
-			this.surfs[ 3 ].removeClass( 'mMenu-balanced' )
-		}
-	}.bind( this )
-
-
-
-	context.add( {
-		align: [ 0, 1 ],
-		transform: this.xTrans,
-		opacity: this.opa
-	} ).add( this.layout )
-
-}
 
 
 
 
 
-module.exports = mMenu
+} )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //
 

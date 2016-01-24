@@ -1,5 +1,6 @@
 //
 
+var _$utils = require( './utils.js' )
 var Curves = require( './Curves.js' )
 var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
@@ -154,6 +155,9 @@ function sBar( context ) {
 			this.clickHoldFn( i )
 		}.bind( this ), 25 )
 
+		_$utils.events.emit( 'samsara.mMenu.close' )
+		_$utils.events.emit( 'samsara.sMenu.close' )
+
 	}.bind( this ) )
 
 	this.input.on( 'update', function ( pay ) {
@@ -169,15 +173,8 @@ function sBar( context ) {
 
 		if ( this.down < this.swipeYThreshold ) {
 			this.down = this.down + ( ( delta[ 1 ] * velocity[ 1 ] ) - ( delta[ 0 ] * velocity[ 0 ] ) )
-				// console.log( 'this.down >', this.down )
 		} else {
-			if ( value[ 1 ] > 0 ) {
-				// _$famous.mMenu.show()
-				console.warn( '_$famous.mMenu.show' )
-			} else {
-				// self.tuts.emit()
-				console.warn( 'self.tuts.emit' )
-			}
+			_$utils.events.emit( 'samsara.mMenu.open' )
 			this.stopDragging = true
 			this.didClick = true
 			this.centerIt()
@@ -218,6 +215,9 @@ function sBar( context ) {
 
 					Timer.after( function () {
 						this.temp[ 0 ].click()
+							// Timer.after( function () {
+							// 	this.centerIt( true )
+							// }.bind( this ), 5 )
 					}.bind( this ), 5 )
 				}
 
@@ -242,6 +242,9 @@ function sBar( context ) {
 
 					Timer.after( function () {
 						this.temp[ 5 ].click()
+							// Timer.after( function () {
+							// 	this.centerIt( true )
+							// }.bind( this ), 5 )
 					}.bind( this ), 5 )
 
 				}
@@ -380,6 +383,9 @@ function sBar( context ) {
 
 		}
 
+		this.surfs[ 0 ].setClasses( [] )
+		this.surfs[ 5 ].setClasses( [] )
+
 		this.surfs[ 0 ].addClass( [ 'sBar-' + temp[ 0 ]._color ] )
 		if ( temp[ 5 ]._color ) {
 			this.surfs[ 5 ].addClass( [ 'sBar-' + temp[ 5 ]._color ] )
@@ -391,7 +397,7 @@ function sBar( context ) {
 
 	this.centerIt = function ( now ) {
 		if ( now == true ) {
-			this.x.reset()
+			this.x.set( 0 )
 			return
 		}
 
