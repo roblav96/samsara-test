@@ -7,6 +7,7 @@ var Transform = Samsara.Core.Transform
 var Timer = Samsara.Core.Timer
 var MouseInput = Samsara.Inputs.MouseInput
 var TouchInput = Samsara.Inputs.TouchInput
+var ContainerSurface = Samsara.DOM.ContainerSurface
 var SequentialLayout = Samsara.Layouts.SequentialLayout
 var Transitionable = Samsara.Core.Transitionable
 var Accumulator = Samsara.Streams.Accumulator
@@ -32,25 +33,33 @@ function sBar( context ) {
 	this.temp = [ {}, {}, {}, {}, {}, {}, {}, {} ]
 	this.surfs = []
 	this.nodes = []
+	this.scales = []
+	this.scalesTrans = []
+	this.jumps = []
+	this.jumpsTrans = []
 
 	this.layout = new SequentialLayout( {
 		direction: 0
 	} )
 
-	this.input = new TouchInput()
+	this.input = new MouseInput()
 
 	this.x = new Transitionable( 0 )
 	this.transform = this.x.map( function ( v ) {
 		// console.log( 'v >', v )
-		return Transform.translateX( v )
-	} )
+		return Transform.translateX( v + ( this.xDelta * 0.5 ) )
+	}.bind( this ) )
 
 	var i, len = this.temp.length
 	for ( i = 0; i < len; i++ ) {
+		this.nodes[ i ] = new ContainerSurface( {
+			size: [ this.xDelta, this.height ]
+		} )
 
 		this.surfs[ i ] = new Surface( {
 			content: '',
-			size: [ this.xDelta, this.height ]
+			size: [ this.xDelta, this.height ],
+			origin: [ 0.5, 1 ]
 		} )
 
 		this.temp[ i ].click = null
@@ -60,9 +69,25 @@ function sBar( context ) {
 
 		this.input.subscribe( this.surfs[ i ] )
 
+		this.scales[ i ] = new Transitionable( 1 )
+		this.scalesTrans[ i ] = this.scales[ i ].map( function ( value ) {
+			return Transform.scale( [ value, value ] )
+		} )
+
+		this.jumps[ i ] = new Transitionable( 0 )
+		this.jumpsTrans[ i ] = this.jumps[ i ].map( function ( value ) {
+			return Transform.translateY( value )
+		} )
+
+		this.nodes[ i ].add( {
+			transform: this.scalesTrans[ i ]
+		} ).add( {
+			transform: this.jumpsTrans[ i ]
+		} ).add( this.surfs[ i ] )
+
 	}
 
-	this.layout.addItems( this.surfs )
+	this.layout.addItems( this.nodes )
 
 	this.clickHoldFn = function ( i ) {
 		if ( this.absAccu > this.clickThreshold || this.didClick == true ) {
@@ -101,7 +126,7 @@ function sBar( context ) {
 	}
 
 	this.input.on( 'start', function ( pay ) {
-		console.warn( 'START > pay >', JSON.stringify( pay, true, 4 ) )
+		// console.warn( 'START > pay >', JSON.stringify( pay, true, 4 ) )
 
 		this.x.reset()
 
@@ -224,7 +249,7 @@ function sBar( context ) {
 	}.bind( this ) )
 
 	this.input.on( 'end', function ( pay ) {
-		console.warn( 'END > pay >', JSON.stringify( pay, true, 4 ) )
+		// console.warn( 'END > pay >', JSON.stringify( pay, true, 4 ) )
 
 		if ( this.timeout ) {
 			Timer.clear( this.timeout )
@@ -242,6 +267,13 @@ function sBar( context ) {
 			if ( _.isFunction( this.temp[ i ].click ) ) {
 
 				this.didClick = true
+
+				console.log( 'this.scales[ i ] >', this.scales[ i ] )
+				this.scales[ i ].set( 1.25 )
+
+
+				console.warn( 'do click' )
+				return
 
 				if ( this.temp[ i ].href == true ) {
 					this.temp[ i ].scaleComp.set( 1.5, 1.5, 1 )
@@ -389,7 +421,7 @@ function sBar( context ) {
 
 	context.add( {
 		align: [ 0, 1 ],
-		transform: Transform.translate( [ -this.xDelta, -this.height ] )
+		transform: Transform.translate( [ -this.xDelta, 0 ] )
 	} ).add( {
 		transform: this.transform
 	} ).add( this.layout )
