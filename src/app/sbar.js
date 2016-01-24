@@ -103,8 +103,6 @@ function sBar( context ) {
 
 	this.layout.addItems( this.surfs )
 
-	console.log( 'this.layout >', this.layout )
-
 
 
 	this.x = new Transitionable( 0 )

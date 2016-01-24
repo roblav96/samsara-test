@@ -102,9 +102,13 @@ function mMenu( context ) {
 		return Transform.translate( [ v, -409 ] )
 	} )
 
-	this.touched = function ( index, key ) {
-		console.log( 'index >', index )
-		console.log( 'key >', key )
+	this.touched = function ( key, index ) {
+		if ( key == 'help' ) {
+			// _$router.app.openSOS()
+			console.warn( '_$router.app.openSOS()' )
+			return
+		}
+		this.hrefPrep( key, index )
 	}.bind( this )
 
 	_.forEach( this.temp, function ( v, k ) {
@@ -125,8 +129,8 @@ function mMenu( context ) {
 			size: [ this.width, this.height ]
 		} )
 
-		this.surfs[ i ].on( 'touchstart', function () {
-			this.touched( i, k )
+		this.surfs[ i ].on( 'mousedown', function () {
+			this.touched( k, i )
 		}.bind( this ) )
 
 		this.scales[ i ] = new Transitionable( 1 )
@@ -208,10 +212,58 @@ function mMenu( context ) {
 
 
 
+	this.hrefPrep = function ( key, index ) {
+		if ( _$router._currentRoute.name == this.temp[ key ].state ) {
+			_$utils.events.emit( 'famous.fixMenus' )
+			return
+		}
+		
+		var curName = _$router._currentRoute.name.split( '.' )[ 0 ]
+		if ( curName == 'public' ) {
+			_$utils.events.emit( 'famous.fixMenus' )
+			return
+		}
+		
+		var iFrom = this.temp[ curName ].index
+		var direct = 'left'
+		if ( iFrom > index ) {
+			direct = 'down'
+		} else if ( iFrom < index ) {
+			direct = 'up'
+		}
+		
+		console.log( 'direct >', direct )
+		console.log( 'this.temp[ key ].state >', this.temp[ key ].state )
+		return
+
+		_$router.go( {
+			name: this.temp[ key ].state,
+			query: {
+				direction: direct
+			}
+		} )
+
+	}
 
 
 
+	this.setActiveClass = function ( toState ) {
+		var ts = toState.split( '.' )[ 0 ]
 
+		if ( ts != this.activeClass ) {
+			this.activeClass = ts
+
+			if ( this.activeClass == 'public' ) {
+				return
+			}
+
+			_.forEach( this.surfs, function ( v, i ) {
+				this.surfs[ i ].surf.removeClass( 'mMenu-active' )
+			}.bind( this ) )
+
+			this.surfs[ this.activeClass ].surf.addClass( 'mMenu-active' )
+		}
+	}
 
 
 	context.add( {
