@@ -25,13 +25,13 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			_$samsara.prog.start()
+			_$samsara.mMenu.open()
 		},
 		dev2: function () {
-			_$samsara.prog.stop()
+			_$samsara.mMenu.close()
 		},
 		dev3: function () {
-			_$samsara.prog.error()
+			console.warn( 'dev3' )
 		}
 	}
 
