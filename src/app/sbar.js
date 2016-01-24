@@ -61,10 +61,7 @@ function sBar( context ) {
 		direction: 0
 	} )
 
-	this.touch = new TouchInput( {
-		direction: MouseInput.DIRECTION.X
-	} )
-	this.x = new Transitionable( 0 )
+	this.touch = new TouchInput()
 
 	var i, len = this.sBarTemp.length
 	for ( i = 0; i < len; i++ ) {
@@ -110,71 +107,40 @@ function sBar( context ) {
 
 
 
-	// this.transform = this.x.map( function ( value ) {
-	// 	// console.log( 'value >', value )
-	// 	return Transform.translateX( value )
-	// } )
-
-
-
-	// this.touch.on( 'start', function ( pay ) {
-	// 	// console.warn( 'START > pay >', JSON.stringify( pay, true, 4 ) )
-
-	// 	this.down = 0
-	// 	this.absAccu = 0
-	// 	this.accu = 0
-	// 	this.didClick = false
-	// 	this.stopDragging = false
-
-	// 	this.x.reset( 0 )
-
-	// }.bind( this ) );
-
-	// this.touch.on( 'update', function ( pay ) {
-	// 	// console.log( 'UPDATE > pay >', JSON.stringify( pay, true, 4 ) )
-	// 	// console.log( 'pay.value[ 0 ] >', pay.value[ 0 ] )
-	// 	this.x.set( pay.value[ 0 ] )
-	// }.bind( this ) );
-
-	// this.touch.on( 'end', function ( pay ) {
-	// 	// console.warn( 'END > pay >', JSON.stringify( pay, true, 4 ) )
-
-	// 	this.x.reset( pay.value[ 0 ] )
-	// 		// this.x.reset( 0 )
-	// 	this.x.set( 0, {
-	// 		duration: 250,
-	// 		curve: Curves.outBack
-	// 	}, function () {
-	// 		this.x.reset( 0 )
-	// 	}.bind( this ) )
-
-	// }.bind( this ) )
-
-
-
-	var displacement = new Accumulator( 0, {
-		min: -this.xDelta,
-		max: this.xDelta
+	this.x = new Transitionable( 0 )
+	this.transform = this.x.map( function ( value ) {
+		// console.log( 'value >', value )
+		return Transform.translateX( value )
 	} )
 
-	displacement.subscribe( this.touch.pluck( 'delta' ) )
+	this.touch.on( 'start', function ( pay ) {
+		this.x.reset( 0 )
+	}.bind( this ) )
 
-	var dragDisplacement = displacement.map( function ( value ) {
-		console.log( 'value >', value )
-		return Transform.translateX( value );
-	} )
+	this.touch.on( 'update', function ( pay ) {
+		// console.log( 'pay.value[ 0 ] >', pay.value[ 0 ] )
+		this.x.set( pay.value[ 0 ] )
+	}.bind( this ) )
+
+	this.touch.on( 'end', function ( pay ) {
+		this.x.reset( pay.value[ 0 ] )
+		this.x.set( 0, {
+			duration: 250,
+			curve: Curves.outBack
+		}, function () {
+			this.x.reset( 0 )
+		}.bind( this ) )
+	}.bind( this ) )
+
+
+
+
 
 	context.add( {
 		transform: Transform.translate( [ -this.xDelta, this.wHeight - this.yDelta ] )
 	} ).add( {
-		transform: dragDisplacement
+		transform: this.transform
 	} ).add( this.layout )
-
-	// context.add( {
-	// 	transform: Transform.translate( [ -this.xDelta, this.wHeight - this.yDelta ] )
-	// } ).add( {
-	// 	transform: this.transform
-	// } ).add( this.layout )
 
 }
 
