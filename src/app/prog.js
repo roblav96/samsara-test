@@ -67,12 +67,18 @@ function Prog( context ) {
 	}
 
 	this.done = function () {
+		if ( this.err == true ) {
+			return
+		}
+
 		this.active = false
 		this.posX = 0
 
-		this.opa.reset(0)
-		// this.opa.set( 0 )
+		this.opa.reset( 0 )
 
+		this.surf.setProperties( {
+			background: '#11C1F3'
+		} )
 
 	}
 
@@ -83,10 +89,6 @@ function Prog( context ) {
 
 		this.active = true
 		this.posX = 0
-
-		this.surf.setProperties( {
-			background: '#11C1F3'
-		} )
 
 		this.opa.set( 1 )
 
@@ -107,7 +109,7 @@ function Prog( context ) {
 		this.opa.set( 0, {
 			duration: 500
 		}, function () {
-			if ( this.active == false || this.err == true ) {
+			if ( this.active == false ) {
 				return
 			}
 			this.done()
@@ -115,6 +117,35 @@ function Prog( context ) {
 	}
 
 	this.error = function () {
+		if ( this.err == true ) {
+			return
+		}
+		
+		this.err = true
+		this.active = true
+		this.surf.setProperties( {
+			background: '#EF473A'
+		} )
+
+		this.opa.reset( 1 )
+		this.opa.set( 1 )
+		this.surf.setSize( [ this.wWidth, this.height ] )
+
+		this.x.reset( this.wWidth * 1.5 )
+
+		this.x.set( this.wWidth * 0.5, {
+			duration: 1000,
+			curve: Curves.outBounce
+		}, function () {
+			// this.opa.set( 1 )
+			this.opa.set( 0, {
+				duration: 1000
+			}, function () {
+				this.surf.setSize( [ this.width, this.height ] )
+				this.err = false
+				this.done()
+			}.bind( this ) )
+		}.bind( this ) )
 
 	}
 
