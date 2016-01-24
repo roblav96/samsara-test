@@ -109,7 +109,7 @@ function sBar( context ) {
 
 	this.x = new Transitionable( 0 )
 	this.transform = this.x.map( function ( value ) {
-		// console.log( 'value >', value )
+		console.log( 'value >', value )
 		return Transform.translateX( value )
 	} )
 

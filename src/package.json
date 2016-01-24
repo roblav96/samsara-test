@@ -33,7 +33,7 @@
 		"vue": "*",
 		"vue-router": "*",
 		"vue-touch": "*",
-		"samsarajs": "git://github.com/dmvaldman/samsara.git"
+		"samsarajs": "*"
 	}
 }
 
