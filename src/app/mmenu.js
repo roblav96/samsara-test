@@ -1,8 +1,10 @@
 //
 
+var _$utils = require( './utils.js' )
 var Curves = require( './Curves.js' )
 var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
+var ContainerSurface = Samsara.DOM.ContainerSurface
 var Transform = Samsara.Core.Transform
 var MouseInput = Samsara.Inputs.MouseInput
 var TouchInput = Samsara.Inputs.TouchInput
@@ -25,51 +27,97 @@ function mMenu( context ) {
 	this.showing = false
 	this.activeClass = ''
 
-	this.temp = [ {
+	// this.temp = [ {
+	// 	text: "S.O.S",
+	// 	icon: "ion-help-buoy",
+	// }, {
+	// 	text: "Map",
+	// 	icon: "ion-map",
+	// 	state: "map.index",
+	// 	activeState: 'map',
+	// }, {
+	// 	text: "My Convoy",
+	// 	icon: "ion-person-stalker",
+	// 	state: "contacts.index",
+	// 	activeState: 'contacts',
+	// }, {
+	// 	text: "Activities",
+	// 	icon: "ion-ios-pulse-strong",
+	// 	state: "activity.index",
+	// 	activeState: 'activity',
+	// }, {
+	// 	text: "Settings",
+	// 	icon: "ion-settings",
+	// 	state: "settings.index",
+	// 	activeState: 'settings',
+	// } ]
+
+	this.temp = {}
+	this.temp[ 'help' ] = {
 		text: "S.O.S",
 		icon: "ion-help-buoy",
-	}, {
+		index: 0
+	}
+	this.temp[ 'map' ] = {
 		text: "Map",
 		icon: "ion-map",
 		state: "map.index",
 		activeState: 'map',
-	}, {
+		index: 1
+	}
+	this.temp[ 'contacts' ] = {
 		text: "My Convoy",
 		icon: "ion-person-stalker",
 		state: "contacts.index",
 		activeState: 'contacts',
-	}, {
+		index: 2
+	}
+	this.temp[ 'activity' ] = {
 		text: "Activities",
 		icon: "ion-ios-pulse-strong",
 		state: "activity.index",
 		activeState: 'activity',
-	}, {
+		index: 3
+	}
+	this.temp[ 'settings' ] = {
 		text: "Settings",
 		icon: "ion-settings",
 		state: "settings.index",
 		activeState: 'settings',
-	} ]
+		index: 4
+	}
 
 	this.surfs = []
+	this.nodes = []
+	this.scales = []
+	this.scalesTrans = []
 	this.layout = new SequentialLayout( {
 		direction: 1
 	} )
 
-	this.input = new MouseInput()
-	this.x = new Transitionable( 0 )
+	this.x = new Transitionable( -100 )
 	this.opa = new Transitionable( 0 )
 
 	this.xTrans = this.x.map( function ( v ) {
-		// return Transform.translateX( v )
-		return v
+		return Transform.translate( [ v, -409 ] )
 	} )
 
-	var i, len = this.temp.length
-	for ( i = 0; i < len; i++ ) {
+	this.touched = function ( index, key ) {
+		console.log( 'index >', index )
+		console.log( 'key >', key )
+	}.bind( this )
 
-		var content = '<div class="list tabs side-tab tabs-icon-top"><li class="item tab-item"><i class="icon ' + this.temp[ i ].icon + '"></i>' + this.temp[ i ].text + '</li></div>'
-		if ( i == 0 ) {
-			content = '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ' + this.temp[ i ].icon + '"></i>' + this.temp[ i ].text + '</li></div>'
+	_.forEach( this.temp, function ( v, k ) {
+		var i = v.index
+
+		this.nodes[ i ] = new ContainerSurface( {
+			size: [ this.width, this.height ],
+			origin: [ 0, 0.5 ]
+		} )
+
+		var content = '<div class="list tabs side-tab tabs-icon-top"><li class="item tab-item"><i class="icon ' + v.icon + '"></i>' + v.text + '</li></div>'
+		if ( k == "help" ) {
+			content = '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ' + v.icon + '"></i>' + v.text + '</li></div>'
 		}
 
 		this.surfs[ i ] = new Surface( {
@@ -77,9 +125,86 @@ function mMenu( context ) {
 			size: [ this.width, this.height ]
 		} )
 
+		this.surfs[ i ].on( 'touchstart', function () {
+			this.touched( i, k )
+		}.bind( this ) )
+
+		this.scales[ i ] = new Transitionable( 1 )
+		this.scalesTrans[ i ] = this.scales[ i ].map( function ( value ) {
+			return Transform.scale( [ value, value ] )
+		} )
+
+		this.nodes[ i ].add( {
+			transform: this.scalesTrans[ i ]
+		} ).add( this.surfs[ i ] )
+
+	}.bind( this ) )
+
+	this.layout.addItems( this.nodes )
+
+
+
+
+
+	this.toggle = function () {
+		if ( this.showing == true ) {
+			return
+		}
+
+		if ( this.shown == true ) {
+			this.close()
+		} else {
+			this.open()
+		}
 	}
 
-	this.layout.addItems( this.surfs )
+	this.open = function () {
+		if ( this.shown == true ) {
+			return
+		}
+
+		// _$utils.events.emit( 'famous.sMenu.close' )
+		this.showing = true
+
+		this.opa.set( 1, {
+			duration: 250
+		} )
+		this.x.set( 0, {
+			duration: 250,
+			curve: Curves.outBack
+		}, function () {
+			this.shown = true
+			this.showing = false
+		}.bind( this ) )
+	}.bind( this )
+
+	this.close = function ( now ) {
+		if ( this.shown == false ) {
+			return
+		}
+
+		this.showing = true
+
+		if ( now == true ) {
+			this.opa.set( 0 )
+			this.x.set( -100 )
+			this.showing = false
+			this.shown = false
+			return
+		}
+
+		this.opa.set( 0, {
+			duration: 250,
+			curve: Curves.easeIn
+		} )
+		this.x.set( -100, {
+			duration: 250,
+			curve: Curves.easeIn
+		}, function () {
+			this.shown = false
+			this.showing = false
+		}.bind( this ) )
+	}.bind( this )
 
 
 
@@ -88,15 +213,11 @@ function mMenu( context ) {
 
 
 
-
-
-
-
-console.log( 'this.xTrans >', this.xTrans )
-console.log( 'this.x >', this.x )
 
 	context.add( {
-		transform: Transform.translate( [ this.x.value, 0 ] )
+		align: [ 0, 1 ],
+		transform: this.xTrans,
+		opacity: this.opa
 	} ).add( this.layout )
 
 }
