@@ -25,13 +25,18 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			_$samsara.sMenu.open()
+			this.showTuts()
 		},
 		dev2: function () {
-			_$samsara.sMenu.close()
+			_$samsara.tuts.close()
 		},
 		dev3: function () {
 			console.warn( 'dev3' )
+		},
+
+		showTuts: function () {
+			var html = require( './about-tuts.html' )
+			_$samsara.tuts.open( html )
 		}
 	}
 

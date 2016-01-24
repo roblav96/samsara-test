@@ -99,7 +99,7 @@ function mMenu( context ) {
 	this.opa = new Transitionable( 0 )
 
 	this.xTrans = this.x.map( function ( v ) {
-		return Transform.translate( [ v, -409 ] )
+		return Transform.translate( [ v, -449 ] )
 	} )
 
 	this.touched = function ( key, index ) {
@@ -109,14 +109,13 @@ function mMenu( context ) {
 			return
 		}
 		this.hrefPrep( key, index )
-	}.bind( this )
+	}
 
 	_.forEach( this.temp, function ( v, k ) {
 		var i = v.index
 
 		this.nodes[ i ] = new ContainerSurface( {
-			size: [ this.width, this.height ],
-			origin: [ 0, 0.5 ]
+			size: [ this.width, this.height ]
 		} )
 
 		var content = '<div class="list tabs side-tab tabs-icon-top"><li class="item tab-item"><i class="icon ' + v.icon + '"></i>' + v.text + '</li></div>'
@@ -129,7 +128,7 @@ function mMenu( context ) {
 			size: [ this.width, this.height ]
 		} )
 
-		this.surfs[ i ].on( 'mousedown', function () {
+		this.surfs[ i ].on( 'touchstart', function () {
 			this.touched( k, i )
 		}.bind( this ) )
 
@@ -167,14 +166,14 @@ function mMenu( context ) {
 			return
 		}
 
-		// _$utils.events.emit( 'famous.sMenu.close' )
+		_$utils.events.emit( 'samsara.sMenu.close' )
 		this.showing = true
 
 		this.opa.set( 1, {
-			duration: 250
+			duration: 200
 		} )
 		this.x.set( 0, {
-			duration: 250,
+			duration: 200,
 			curve: Curves.outBack
 		}, function () {
 			this.shown = true
@@ -214,13 +213,13 @@ function mMenu( context ) {
 
 	this.hrefPrep = function ( key, index ) {
 		if ( _$router._currentRoute.name == this.temp[ key ].state ) {
-			_$utils.events.emit( 'famous.fixMenus' )
+			_$utils.events.emit( 'samsara.fixMenus' )
 			return
 		}
 
 		var curName = _$router._currentRoute.name.split( '.' )[ 0 ]
 		if ( curName == 'public' ) {
-			_$utils.events.emit( 'famous.fixMenus' )
+			_$utils.events.emit( 'samsara.fixMenus' )
 			return
 		}
 

@@ -28,6 +28,8 @@ function sBar( context ) {
 		return Math.min( Math.max( x, a ), b )
 	}
 
+	this.temps = [ {}, {}, {}, {}, {}, {}, {}, {} ]
+	
 	this.sBarTemp = [ {
 		_text: "Back",
 		_icon: "ion-arrow-left-c",
