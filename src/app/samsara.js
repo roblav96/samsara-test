@@ -25,7 +25,7 @@ _$samsara.init = function () {
 
 
 
-	context.mount()
+	context.mount( document.body )
 
 }
 

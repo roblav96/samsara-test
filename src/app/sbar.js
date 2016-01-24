@@ -8,7 +8,7 @@ var MouseInput = Samsara.Inputs.MouseInput
 var TouchInput = Samsara.Inputs.TouchInput
 var SequentialLayout = Samsara.Layouts.SequentialLayout
 var Transitionable = Samsara.Core.Transitionable
-
+var Accumulator = Samsara.Streams.Accumulator
 
 
 
@@ -61,7 +61,9 @@ function sBar( context ) {
 		direction: 0
 	} )
 
-	this.touch = new MouseInput()
+	this.touch = new TouchInput( {
+		direction: MouseInput.DIRECTION.X
+	} )
 	this.x = new Transitionable( 0 )
 
 	var i, len = this.sBarTemp.length
@@ -106,114 +108,108 @@ function sBar( context ) {
 
 	console.log( 'this.layout >', this.layout )
 
-	this.transform = this.x.map( function ( value ) {
-		console.log( 'value >', value )
-		return Transform.translateX( value )
+
+
+	// this.transform = this.x.map( function ( value ) {
+	// 	// console.log( 'value >', value )
+	// 	return Transform.translateX( value )
+	// } )
+
+
+
+	// this.touch.on( 'start', function ( pay ) {
+	// 	// console.warn( 'START > pay >', JSON.stringify( pay, true, 4 ) )
+
+	// 	this.down = 0
+	// 	this.absAccu = 0
+	// 	this.accu = 0
+	// 	this.didClick = false
+	// 	this.stopDragging = false
+
+	// 	this.x.reset( 0 )
+
+	// }.bind( this ) );
+
+	// this.touch.on( 'update', function ( pay ) {
+	// 	// console.log( 'UPDATE > pay >', JSON.stringify( pay, true, 4 ) )
+	// 	// console.log( 'pay.value[ 0 ] >', pay.value[ 0 ] )
+	// 	this.x.set( pay.value[ 0 ] )
+	// }.bind( this ) );
+
+	// this.touch.on( 'end', function ( pay ) {
+	// 	// console.warn( 'END > pay >', JSON.stringify( pay, true, 4 ) )
+
+	// 	this.x.reset( pay.value[ 0 ] )
+	// 		// this.x.reset( 0 )
+	// 	this.x.set( 0, {
+	// 		duration: 250,
+	// 		curve: Curves.outBack
+	// 	}, function () {
+	// 		this.x.reset( 0 )
+	// 	}.bind( this ) )
+
+	// }.bind( this ) )
+
+
+
+	var displacement = new Accumulator( 0, {
+		min: -this.xDelta,
+		max: this.xDelta
 	} )
 
-
-
-	this.touch.on( 'start', function ( pay ) {
-		// console.warn( 'START > pay >', JSON.stringify( pay, true, 4 ) )
-
-		this.down = 0
-		this.absAccu = 0
-		this.accu = 0
-		this.didClick = false
-		this.stopDragging = false
-
-		this.x.reset( 0 )
-
-	}.bind( this ) );
-
-	this.touch.on( 'update', function ( pay ) {
-		// console.log( 'UPDATE > pay >', JSON.stringify( pay, true, 4 ) )
-		console.log( 'pay.value[ 0 ] >', pay.value[ 0 ] )
-		this.x.set( pay.value[ 0 ] )
-	}.bind( this ) );
-
-	this.touch.on( 'end', function ( pay ) {
-		// console.warn( 'END > pay >', JSON.stringify( pay, true, 4 ) )
-
-		this.x.reset( pay.value[ 0 ] )
-			// this.x.reset( 0 )
-		this.x.set( 0, {
-			duration: 250,
-			curve: Curves.outBack
-		}, function () {
-			this.x.reset( 0 )
-		}.bind( this ) )
-
-	}.bind( this ) )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	displacement.subscribe( this.touch.pluck( 'delta' ) )
+
+	var dragDisplacement = displacement.map( function ( value ) {
+		console.log( 'value >', value )
+		return Transform.translateX( value );
+	} )
 
 	context.add( {
-		transform: Transform.translateX( -this.xDelta )
+		transform: Transform.translate( [ -this.xDelta, this.wHeight - this.yDelta ] )
 	} ).add( {
-		transform: this.transform
+		transform: dragDisplacement
 	} ).add( this.layout )
+
+	// context.add( {
+	// 	transform: Transform.translate( [ -this.xDelta, this.wHeight - this.yDelta ] )
+	// } ).add( {
+	// 	transform: this.transform
+	// } ).add( this.layout )
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = sBar
+
+//
 
