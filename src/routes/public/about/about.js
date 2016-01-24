@@ -30,6 +30,9 @@ module.exports = {
 			_href: true,
 			_click: function () {
 				console.warn( 'map' )
+			}.bind( this ),
+			_clickHold: function () {
+				console.warn( 'map _clickHold' )
 			}.bind( this )
 		}, {
 			_text: "Activities",
@@ -37,6 +40,9 @@ module.exports = {
 			_href: true,
 			_click: function () {
 				console.warn( 'Activities' )
+			}.bind( this ),
+			_clickHold: function () {
+				console.warn( 'Activities _clickHold' )
 			}.bind( this )
 		}, {
 			_text: "Submit",

@@ -42,7 +42,7 @@ function sBar( context ) {
 		direction: 0
 	} )
 
-	this.input = new MouseInput()
+	this.input = new TouchInput()
 
 	this.x = new Transitionable( 0 )
 	this.transform = this.x.map( function ( v ) {
@@ -89,13 +89,12 @@ function sBar( context ) {
 
 	this.layout.addItems( this.nodes )
 
-	this.clickHoldFn = function ( i ) {
+	this.clickHoldFn = function ( posX ) {
 		if ( this.absAccu > this.clickThreshold || this.didClick == true ) {
 			return
 		}
 
-		console.warn( 'this.clickHoldFn' )
-		return
+		var i = this.getSurfByPos( posX )
 
 		if ( _.isFunction( this.temp[ i ].clickHold ) ) {
 
@@ -106,6 +105,20 @@ function sBar( context ) {
 
 			this.temp[ i ].clickHold()
 			this.didClick = true
+
+			this.scales[ i ].reset( 1.5 )
+			this.scales[ i ].set( 1, {
+				duration: 1000,
+				curve: Curves.outBounce
+			} )
+
+			this.jumps[ i ].reset( -this.height )
+			this.jumps[ i ].set( 0, {
+				duration: 1000,
+				curve: Curves.outBounce
+			}, function () {
+				this.centerIt()
+			}.bind( this ) )
 
 			// this.temp[ i ].scaleComp.set( 1.5, 1.5, 1 )
 			// this.temp[ i ].scaleComp.set( 1, 1, 1, {
@@ -136,7 +149,10 @@ function sBar( context ) {
 		this.didClick = false
 		this.stopDragging = false
 
-		this.timeout = Timer.after( this.clickHoldFn, 25 )
+		var i = pay.clientX
+		this.timeout = Timer.after( function () {
+			this.clickHoldFn( i )
+		}.bind( this ), 25 )
 
 	}.bind( this ) )
 
@@ -268,33 +284,26 @@ function sBar( context ) {
 
 				this.didClick = true
 
-				console.log( 'this.scales[ i ] >', this.scales[ i ] )
-				this.scales[ i ].set( 1.25 )
-
-
-				console.warn( 'do click' )
-				return
-
 				if ( this.temp[ i ].href == true ) {
-					this.temp[ i ].scaleComp.set( 1.5, 1.5, 1 )
-					_.delay( function () {
+					this.scales[ i ].set( 1.25 )
+
+					Timer.after( function () {
 						this.temp[ i ].click()
-						_.delay( function () {
-							this.temp[ i ].scaleComp.set( 1, 1, 1 )
-							this.centerIt()
-						}.bind( this ), 50 )
-					}.bind( this ), 50 )
+						Timer.after( function () {
+							this.scales[ i ].set( 1 )
+						}.bind( this ), 5 )
+					}.bind( this ), 5 )
 					return
 				}
 
 				this.temp[ i ].click()
-				this.temp[ i ].scaleComp.set( 1.5, 1.5, 1, {
+				this.scales[ i ].set( 1.25, {
 					duration: 100,
-					curve: 'easeOutBounce'
+					curve: Curves.easeOutBounce
 				}, function () {
-					this.temp[ i ].scaleComp.set( 1, 1, 1, {
+					this.scales[ i ].set( 1, {
 						duration: 100,
-						curve: 'easeIn'
+						curve: Curves.easeIn
 					}, function () {
 						this.centerIt()
 					}.bind( this ) )
