@@ -25,10 +25,10 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			_$samsara.mMenu.open()
+			_$samsara.sMenu.open()
 		},
 		dev2: function () {
-			_$samsara.mMenu.close()
+			_$samsara.sMenu.close()
 		},
 		dev3: function () {
 			console.warn( 'dev3' )

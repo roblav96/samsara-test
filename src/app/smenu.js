@@ -20,72 +20,14 @@ function mMenu( context ) {
 	this.wHeight = window.innerHeight
 	this.halfwHeight = this.wHeight * 0.5
 
-	this.index = 401
+	this.index = 301
 	this.width = 100
 	this.height = 80
 	this.shown = false
 	this.showing = false
-	this.activeClass = ''
+	this.temp = [ {}, {}, {}, {}, {}, {}, {}, {} ]
 
-	// this.temp = [ {
-	// 	text: "S.O.S",
-	// 	icon: "ion-help-buoy",
-	// }, {
-	// 	text: "Map",
-	// 	icon: "ion-map",
-	// 	state: "map.index",
-	// 	activeState: 'map',
-	// }, {
-	// 	text: "My Convoy",
-	// 	icon: "ion-person-stalker",
-	// 	state: "contacts.index",
-	// 	activeState: 'contacts',
-	// }, {
-	// 	text: "Activities",
-	// 	icon: "ion-ios-pulse-strong",
-	// 	state: "activity.index",
-	// 	activeState: 'activity',
-	// }, {
-	// 	text: "Settings",
-	// 	icon: "ion-settings",
-	// 	state: "settings.index",
-	// 	activeState: 'settings',
-	// } ]
 
-	this.temp = {}
-	this.temp[ 'help' ] = {
-		text: "S.O.S",
-		icon: "ion-help-buoy",
-		index: 0
-	}
-	this.temp[ 'map' ] = {
-		text: "Map",
-		icon: "ion-map",
-		state: "map.index",
-		activeState: 'map',
-		index: 1
-	}
-	this.temp[ 'contacts' ] = {
-		text: "My Convoy",
-		icon: "ion-person-stalker",
-		state: "contacts.index",
-		activeState: 'contacts',
-		index: 2
-	}
-	this.temp[ 'activity' ] = {
-		text: "Activities",
-		icon: "ion-ios-pulse-strong",
-		state: "activity.index",
-		activeState: 'activity',
-		index: 3
-	}
-	this.temp[ 'settings' ] = {
-		text: "Settings",
-		icon: "ion-settings",
-		state: "settings.index",
-		activeState: 'settings',
-		index: 4
-	}
 
 	this.surfs = []
 	this.nodes = []
@@ -95,11 +37,10 @@ function mMenu( context ) {
 		direction: 1
 	} )
 
-	this.x = new Transitionable( -100 )
-	this.opa = new Transitionable( 0 )
+	this.y = new Transitionable( 0 )
 
-	this.xTrans = this.x.map( function ( v ) {
-		return Transform.translate( [ v, -409 ] )
+	this.yTrans = this.y.map( function ( v ) {
+		return Transform.translate( [ 0, v ] )
 	} )
 
 	this.touched = function ( key, index ) {
