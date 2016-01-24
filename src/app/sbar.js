@@ -61,7 +61,7 @@ function sBar( context ) {
 		direction: 0
 	} )
 
-	this.touch = new TouchInput()
+	this.touch = new MouseInput()
 	this.x = new Transitionable( 0 )
 
 	var i, len = this.sBarTemp.length
@@ -122,28 +122,27 @@ function sBar( context ) {
 		this.didClick = false
 		this.stopDragging = false
 
-
-
-
+		this.x.reset( 0 )
 
 	}.bind( this ) );
 
 	this.touch.on( 'update', function ( pay ) {
 		// console.log( 'UPDATE > pay >', JSON.stringify( pay, true, 4 ) )
-
+		console.log( 'pay.value[ 0 ] >', pay.value[ 0 ] )
 		this.x.set( pay.value[ 0 ] )
-
-
 	}.bind( this ) );
 
 	this.touch.on( 'end', function ( pay ) {
 		// console.warn( 'END > pay >', JSON.stringify( pay, true, 4 ) )
 
-		// this.x.set( pay.value[ 0 ] )
-		this.x.set( 100, {
-			duration: 1000,
-			curve: 'easeOutBounce'
-		} )
+		this.x.reset( pay.value[ 0 ] )
+			// this.x.reset( 0 )
+		this.x.set( 0, {
+			duration: 250,
+			curve: Curves.outBack
+		}, function () {
+			this.x.reset( 0 )
+		}.bind( this ) )
 
 	}.bind( this ) )
 
@@ -208,12 +207,9 @@ function sBar( context ) {
 
 
 
-
-
-
-
-
 	context.add( {
+		transform: Transform.translateX( -this.xDelta )
+	} ).add( {
 		transform: this.transform
 	} ).add( this.layout )
 
