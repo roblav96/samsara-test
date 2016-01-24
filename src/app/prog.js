@@ -69,9 +69,11 @@ function Prog( context ) {
 	this.done = function () {
 		this.active = false
 		this.posX = 0
-		this.opa.set( 1 )
-		
-		
+
+		this.opa.reset(0)
+		// this.opa.set( 0 )
+
+
 	}
 
 	this.start = function () {
@@ -79,11 +81,17 @@ function Prog( context ) {
 			return
 		}
 
-		this.opa.set( 1 )
-		this.posX = 0
 		this.active = true
+		this.posX = 0
+
+		this.surf.setProperties( {
+			background: '#11C1F3'
+		} )
+
+		this.opa.set( 1 )
 
 		this.x.reset( 0 )
+
 		this.swap()
 	}
 
@@ -92,7 +100,18 @@ function Prog( context ) {
 			return
 		}
 
-		this.done()
+		this.surf.setProperties( {
+			background: '#33CD5F'
+		} )
+
+		this.opa.set( 0, {
+			duration: 500
+		}, function () {
+			if ( this.active == false || this.err == true ) {
+				return
+			}
+			this.done()
+		}.bind( this ) )
 	}
 
 	this.error = function () {
@@ -104,6 +123,51 @@ function Prog( context ) {
 	} ).add( this.surf )
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = Prog
 
