@@ -3,6 +3,7 @@
 var Curves = require( './Curves.js' )
 var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
+var Timer = Samsara.Core.Timer
 var Transform = Samsara.Core.Transform
 var MouseInput = Samsara.Inputs.MouseInput
 var TouchInput = Samsara.Inputs.TouchInput
@@ -25,19 +26,16 @@ function Tuts( context ) {
 
 
 
-	this.y = new Transitionable( 0 )
+	this.y = new Transitionable( -this.wHeight )
 	this.opa = new Transitionable( 1 )
-	this.scale = new Transitionable( 0.5 )
+	this.scale = new Transitionable( 1 )
+
 	this.yTrans = this.y.map( function ( v ) {
-		return Transform.translateY( v )
-	} )
+		return Transform.translate( [ this.wWidth * 0.5, v + this.top + 44 ] )
+	}.bind( this ) )
 	this.scaleTrans = this.scale.map( function ( v ) {
 		return Transform.scale( [ v, v ] )
 	} )
-
-	this.click = function () {
-		this.close()
-	}.bind( this )
 
 	this.surf = new Surface( {
 		size: [ this.wWidth, this.wHeight - 44 - 49 - this.top ],
@@ -51,6 +49,10 @@ function Tuts( context ) {
 		}
 	} )
 
+	this.surf.on( 'touchstart', function () {
+		this.close()
+	}.bind( this ) )
+
 	this.open = function ( temp ) {
 		if ( this.shown == true ) {
 			return
@@ -61,7 +63,27 @@ function Tuts( context ) {
 
 		this.surf.setContent( temp )
 
+		Timer.after( function () {
+			var duration = 250
+			var curve = Curves.outBack
 
+			this.opa.set( 1, {
+				duration: duration,
+				curve: curve
+			} )
+			this.scale.set( 1, {
+				duration: duration,
+				curve: curve
+			} )
+
+			this.y.set( 0, {
+				duration: duration,
+				curve: curve
+			}, function () {
+				this.shown = true
+				this.showing = false
+			}.bind( this ) )
+		}.bind( this ), 2 )
 
 	}
 
@@ -72,7 +94,25 @@ function Tuts( context ) {
 
 		this.showing = true
 
+		var duration = 500
+		var curve = Curves.easeIn
 
+		this.opa.set( 0, {
+			duration: duration,
+			curve: curve
+		} )
+		this.scale.set( 0.5, {
+			duration: duration,
+			curve: curve
+		} )
+
+		this.y.set( -this.wHeight, {
+			duration: duration,
+			curve: curve
+		}, function () {
+			this.shown = false
+			this.showing = false
+		}.bind( this ) )
 
 	}
 
@@ -80,23 +120,12 @@ function Tuts( context ) {
 
 
 
-	console.log( 'this.yTrans >', this.yTrans )
-	console.log( 'this.scaleTrans >', this.scaleTrans )
-	
-	// var idk = Transform.compose( [
-	// 	this.yTrans,
-	// 	this.scaleTrans
-	// ] )
-	// console.log( 'idk >', idk )
+
 
 	context.add( {
 		transform: this.yTrans
-
-		// } ).add( {
-		// transform: Transform.compose( [
-		// 	this.yTrans,
-		// 	this.scaleTrans
-		// ] )
+	} ).add( {
+		transform: this.scaleTrans
 	} ).add( this.surf )
 
 }
