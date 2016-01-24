@@ -266,6 +266,31 @@ function mMenu( context ) {
 	}
 
 
+
+	this.sosBarHeader = function ( drill ) {
+		if ( C_EMERGENCY == true ) {
+			this.surfs[ 0 ].addClass( 'mMenu-emergency' )
+			var str = "ACTIVE"
+			if ( drill == true ) {
+				str = str + "<br>DRILL"
+			}
+			this.surfs[ 0 ].setContent( '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ion-help-buoy"></i>' + str + '</li></div>' )
+			return
+		}
+		this.surfs[ 0 ].removeClass( 'mMenu-emergency' )
+		this.surfs[ 0 ].setContent( '<div class="list tabs side-tab tabs-icon-top help-me"><li class="item tab-item"><i class="icon ion-help-buoy"></i>S.O.S</li></div>' )
+	}.bind( this )
+
+	this.activities = function ( bool ) {
+		if ( bool == true ) {
+			this.surfs[ 3 ].addClass( 'mMenu-balanced' )
+		} else {
+			this.surfs[ 3 ].removeClass( 'mMenu-balanced' )
+		}
+	}.bind( this )
+	
+	
+
 	context.add( {
 		align: [ 0, 1 ],
 		transform: this.xTrans,
