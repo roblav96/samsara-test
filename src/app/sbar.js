@@ -70,7 +70,9 @@ function sBar( context ) {
 	}.bind( this ) )
 
 	this.input.on( 'update', function ( pay ) {
-		// console.log( 'pay.value[ 0 ] >', pay.value[ 0 ] )
+		
+		
+		
 		this.x.set( pay.value[ 0 ] )
 	}.bind( this ) )
 
