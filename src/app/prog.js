@@ -28,7 +28,7 @@ function Prog( context ) {
 
 
 	this.x = new Transitionable( this.posX )
-	this.opa = new Transitionable( 1 )
+	this.opa = new Transitionable( 0 )
 
 	this.xTrans = this.x.map( function ( v ) {
 		return Transform.translateX( v )
@@ -137,7 +137,6 @@ function Prog( context ) {
 			duration: 1000,
 			curve: Curves.outBounce
 		}, function () {
-			// this.opa.set( 1 )
 			this.opa.set( 0, {
 				duration: 1000
 			}, function () {
@@ -154,47 +153,6 @@ function Prog( context ) {
 	} ).add( this.surf )
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
