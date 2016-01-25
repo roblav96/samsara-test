@@ -29,8 +29,10 @@ _$samsara.init = function () {
 	// _$samsara.tuts = new tuts( context )
 	// _$samsara.prog = new prog( context )
 
-	_$samsara.mMenu = new mMenu()
-	context.add( _$samsara.mMenu )
+	var _mMenu = new mMenu()
+	context.add( _mMenu )
+	
+	
 
 	// _$samsara.sMenu = new sMenu( context )
 	// _$samsara.sBar = new sBar( context )
@@ -54,6 +56,7 @@ _$samsara.init = function () {
 	// _$utils.events.on( 'samsara.fixMenus', _$samsara.fixMenus )
 
 }
+
 // document.addEventListener( "DOMContentLoaded", _$samsara.init )
 
 _$samsara.setGpuSettings = function ( bool, platform ) {
