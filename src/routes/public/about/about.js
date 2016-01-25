@@ -1,5 +1,6 @@
 //
 
+var _$db = require( '../../../app/db.js' )
 var _$utils = require( '../../../app/utils.js' )
 var _$samsara = require( '../../../app/samsara.js' )
 
@@ -9,6 +10,12 @@ module.exports = {
 	template: require( './about-template.html' ),
 
 	ready: function () {
+		
+		console.log( '_$db >', _$db )
+		
+		// _$db.save('yayy')
+		
+		// console.log( '_$db.temp >', JSON.stringify( _$db.temp, true, 4 ) )
 
 		// _$samsara.sBar.update( [ {
 		// 	_text: "Back",

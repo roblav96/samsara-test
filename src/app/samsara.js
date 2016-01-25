@@ -32,7 +32,7 @@ _$samsara.init = function () {
 	var mMenu = new _mMenu()
 	context.add( mMenu )
 	
-	console.log( 'mMenu >', mMenu )
+	// console.log( 'mMenu >', mMenu )
 	
 	_$samsara.mMenu.toggle = mMenu.toggle
 	_$samsara.mMenu.open = mMenu.open

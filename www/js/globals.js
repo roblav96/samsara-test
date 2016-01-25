@@ -51,9 +51,13 @@ if ( ENV_PRODUCTION ) {
 }
 
 
-
-
-
+window.plugins = {}
+window.plugins.nativepagetransitions = {}
+window.plugins.nativepagetransitions.globalOptions = {}
+window.plugins.nativepagetransitions.slide = function ( opts, callback ) {
+	callback()
+}
+window.plugins.nativepagetransitions.executePendingTransition = function () {}
 
 
 
