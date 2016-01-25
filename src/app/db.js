@@ -9,13 +9,21 @@ var _$utils = require( './utils.js' )
 _$utils.events.once( 'db.opened', function () {
 	console.info( 'db.opened' )
 
+	var proms = []
 	var tables = dexie._tables
 	var i, len = tables.length
 	for ( i = 0; i < len; i++ ) {
-		this[ tables[ i ].name ] = new DB( tables[ i ] ).loki
+		var db = new DB( tables[ i ] )
+		this[ tables[ i ].name ] = db.loki
 
-		_$utils.events.emit( 'db.ready' )
+		proms.push( db.loaded )
 	}
+
+	Promise.all( proms ).then( function () {
+		_$utils.events.emit( 'db.ready' )
+	} ).catch( function ( err ) {
+		console.error( err )
+	} )
 
 }.bind( this ) )
 
@@ -24,7 +32,7 @@ _$utils.events.once( 'db.opened', function () {
 this.putitlogin = function ( response ) { // DEV for login
 	console.log( 'putitlogin > response >', response )
 
-	var contacts = response.contacts
+	var contacts = response
 	var i, len = contacts.length
 	for ( i = 0; i < len; i++ ) {
 		contacts[ i ].num = _.random( 0, 999 )

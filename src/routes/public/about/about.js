@@ -86,6 +86,32 @@ module.exports = {
 		dev1: function () {
 			// _$utils.events.emit( 'samsara.mMenu.open' )
 
+			_$db.putitlogin( [ {
+				"active": true,
+				"boundaries": [],
+				"convoying": false,
+				"disabled": false,
+				"dname": "Laurie Laverty",
+				"fav": false,
+				"groups": [],
+				"id": "14579004-68a5-4f12-913f-e5d04a61b75a",
+				"uname": "ljlaverty",
+				"xid": "rob"
+			}, {
+				"active": true,
+				"boundaries": [],
+				"convoying": false,
+				"disabled": false,
+				"dname": "Marina",
+				"fav": false,
+				"groups": [],
+				"id": "de473bb0-a5da-46bf-87ad-e122e725328e",
+				"uname": "marina",
+				"xid": "rob"
+			} ] )
+
+			return
+
 			var d = {
 				uname: 'rob',
 				pass: 'abc123'

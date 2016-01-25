@@ -31,7 +31,7 @@ function DB( opts ) {
 	// }
 
 	this.opts = opts
-
+	
 	this.loki = new Loki.Collection( this.opts.name, {
 		indices: this.opts.indices,
 		unique: this.opts.indices[ 0 ]
@@ -76,6 +76,8 @@ function DB( opts ) {
 		this.loki.on( 'insert', this.insert.bind( this ) )
 		this.loki.on( 'update', this.update.bind( this ) )
 		this.loki.on( 'delete', this.remove.bind( this ) )
+		
+		return Promise.resolve()
 
 	} ).catch( function ( err ) {
 		console.error( err )
@@ -166,12 +168,14 @@ DB.prototype.save = _.debounce( function () {
 
 			var i, len = this.insert.length
 			for ( i = 0; i < len; i++ ) {
-				db.add( this.insert[ i ] )
+				var doc = _.omit( this.insert[ i ], '$loki', 'meta' )
+				db.add( doc )
 			}
 
 			var i, len = this.update.length
 			for ( i = 0; i < len; i++ ) {
-				db.put( this.update[ i ] )
+				var doc = _.omit( this.update[ i ], '$loki', 'meta' )
+				db.put( doc )
 			}
 
 			var i, len = this.remove.length
