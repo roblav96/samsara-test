@@ -4,6 +4,9 @@
 =            GLOBALS            =
 ===============================*/
 
+window.shimIndexedDB.__useShim()
+window.shimIndexedDB.__debug( true )
+
 const ENV_DEVELOPMENT = true
 const ENV_PRODUCTION = false
 const ENV_VERSION = '0.4.8'

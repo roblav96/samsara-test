@@ -6,7 +6,7 @@ var Context = Samsara.DOM.Context
 
 var tuts = require( './tuts.js' )
 var prog = require( './prog.js' )
-var mMenu = require( './mmenu.js' )
+var _mMenu = require( './mmenu.js' )
 var sMenu = require( './smenu.js' )
 var sBar = require( './sbar.js' )
 
@@ -29,8 +29,8 @@ _$samsara.init = function () {
 	// _$samsara.tuts = new tuts( context )
 	// _$samsara.prog = new prog( context )
 
-	var _mMenu = new mMenu()
-	context.add( _mMenu )
+	var mMenu = new _mMenu()
+	context.add( mMenu )
 	
 	
 
