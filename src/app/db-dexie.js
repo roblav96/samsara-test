@@ -5,7 +5,7 @@ var _$utils = require( './utils.js' )
 
 
 var version = 1
-var name = 'convoy.db_1'
+var name = 'convoy.db_3'
 var tables = [ {
 	name: 'contacts',
 	schema: 'id, uname'

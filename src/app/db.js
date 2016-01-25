@@ -21,12 +21,16 @@ _$utils.events.once( 'db.opened', function () {
 
 
 
-
 this.putitlogin = function ( response ) { // DEV for login
 	console.log( 'putitlogin > response >', response )
-	
-	
-	
+
+	var contacts = response.contacts
+	var i, len = contacts.length
+	for ( i = 0; i < len; i++ ) {
+		contacts[ i ].num = _.random( 0, 999 )
+		this.contacts.insert( contacts[ i ] )
+	}
+
 }
 
 this.putitsocket = function ( response ) {
@@ -42,7 +46,7 @@ this.putitsocket = function ( response ) {
 	// 	console.log( 'doc >', JSON.stringify( doc, true, 4 ) )
 	// 	dexie.geo.add( doc )
 	// }
-	
+
 	// var actives = response.actives
 	// var i, len = actives.length
 	// for ( i = 0; i < len; i++ ) {
