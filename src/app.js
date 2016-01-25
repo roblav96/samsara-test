@@ -2,6 +2,7 @@
 
 var _$db = require( "./app/db.js" )
 var _$samsara = require( "./app/samsara.js" )
+var _$utils = require( "./app/utils.js" )
 
 
 var Vue = require( 'vue' )
@@ -233,7 +234,12 @@ _$router.redirect( {
 
 
 
-var ready = function () {
+
+var dbReady = false
+var deviceReady = false
+
+var start = function () {
+	console.warn( 'START' )
 
 	if ( window.cordova ) {
 		window.plugins.nativepagetransitions.globalOptions.duration = 250
@@ -248,16 +254,37 @@ var ready = function () {
 		}
 	}
 
-	_$samsara.init()
 	_$router.start( _$App, '#app' )
 
 }
 
+_$utils.events.once( 'db.ready', function () {
+	// console.warn( 'db.ready' )
+	dbReady = true
+
+	if ( deviceReady == false ) {
+		return
+	}
+	start()
+} )
+
+var ready = function () {
+	// console.warn( 'ready' )
+	deviceReady = true
+
+	if ( dbReady == false ) {
+		return
+	}
+	start()
+}
 
 /*===================================
 =            DEVICEREADY            =
 ===================================*/
 document.addEventListener( "DOMContentLoaded", function () {
+
+	_$samsara.init()
+
 	if ( window.cordova ) {
 		return
 	}
@@ -265,6 +292,7 @@ document.addEventListener( "DOMContentLoaded", function () {
 	ready()
 
 } )
+
 document.addEventListener( "deviceready", ready )
 
 

@@ -5,13 +5,13 @@ var _$utils = require( './utils.js' )
 
 
 var version = 1
-var name = 'convoy.db'
+var name = 'convoy.db_1'
 var tables = [ {
 	name: 'contacts',
-	schema: 'id'
+	schema: 'id, uname'
 }, {
 	name: 'boundaries',
-	schema: 'id'
+	schema: 'id, type'
 }, {
 	name: 'activities',
 	schema: 'uuid, type, stamp, xid'
@@ -31,38 +31,31 @@ for ( i = 0; i < len; i++ ) {
 
 var dexie = new Dexie( name )
 dexie.version( version ).stores( stores )
-dexie.open()
+	// dexie.open()
 
 dexie._version = version
 dexie._name = name
 dexie._tables = tables
 
-// var that = {
-// 	dexie: dexie
-// }
+var that = {
+	dexie: dexie
+}
 
-// Promise.resolve().bind( that ).then( function () {
-// 	console.log( 'this >', this )
-// 	return this.dexie.open()
-// } ).catch( function ( err ) {
-// 	navigator.notification.alert( 'DATABASE NOT SUPPORTED ON DEVICE!', null, 'FATAL ERROR!!!', ':(' )
-// 	console.error( err )
-// 	console.error( err.stack )
-// } ).then( function () {
+Promise.resolve().bind( that ).then( function () {
+	return this.dexie.open()
+} ).catch( function ( err ) {
+	console.warn( '_$db.init > FIRST catch >' )
+	console.error( err )
+	console.error( err.stack )
+	navigator.notification.alert( 'DATABASE NOT SUPPORTED ON DEVICE!', null, 'FATAL ERROR!!!', ':(' )
+} ).then( function () {
+	return _$utils.events.emit( 'db.opened' )
+} ).catch( function ( err ) {
+	console.warn( '_$db.init > SECOND catch >' )
+	console.error( err )
+	console.error( err.stack )
+} )
 
-// 	var i, len = this.tables.length
-// 	for ( i = 0; i < len; i++ ) {
-// 		this.db[ this.tables[ i ].name ] = new DB( {
-// 			dexie: this.dexie,
-// 			table: this.tables[ i ]
-// 		} )
-// 	}
-
-// } ).catch( function ( err ) {
-// 	console.warn( '_$db.init > second catch >' )
-// 	console.error( err )
-// 	console.error( err.stack )
-// } )
 
 
 module.exports = dexie

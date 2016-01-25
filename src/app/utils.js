@@ -6,10 +6,10 @@ var moment = require( 'moment' )
 /*==============================
 =            _$utils           =
 ==============================*/
-var _$utils = {}
 
-_$utils.events = new events.EventEmitter()
-
+module.exports = {
+	events: new events.EventEmitter()
+}
 
 
 
@@ -35,7 +35,6 @@ console.info(
 
 
 
-module.exports = _$utils
 
 //
 

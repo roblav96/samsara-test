@@ -35,37 +35,54 @@ function DB( opts ) {
 	// 	return
 	// }
 
+
+
 	var that = {
 		opts: this.opts,
-		loki: this.loki
-	}
-
-	if ( this.opts.name == 'geo' ) {
-		console.log( 'this.loki.data >', this.loki.data )
-		
-		return
+		loki: this.loki,
+		// xid: xid
+		xid: 'cel'
 	}
 
 	Promise.resolve().bind( that ).then( function () {
-
-		if ( this.opts.name == 'activities' ) {
-			return dexie[ this.opts.name ].orderBy( 'stamp' ).reverse().limit( 50 ).toArray()
-		}
-
 		return dexie[ this.opts.name ].toArray()
-
 	} ).then( function ( docs ) {
-
 		if ( _.isEmpty( docs ) ) { // dont load any geo positions into memory
-			return null
+			throw new RangeError()
 		}
 
-		var i, len = docs.length
-		for ( i = 0; i < len; i++ ) {
-			this.loki.insert( docs[ i ] )
+		if ( this.opts.name != 'geo' ) {
+			var i, len = docs.length
+			for ( i = 0; i < len; i++ ) {
+				this.loki.insert( docs[ i ] )
+			}
+
+			throw new RangeError()
 		}
 
-		console.log( 'this.loki.data >', this.loki.data )
+		/*===========================
+		=            GEO            =
+		===========================*/
+
+		return dexie.geo.where( 'xid' ).notEqual( this.xid ).count()
+
+	} ).then( function ( count ) {
+		if ( count == 0 ) {
+			throw new RangeError()
+		}
+
+		console.log( 'count >', count )
+
+
+
+
+
+	} ).catch( RangeError, function () {
+
+
+
+
+
 
 	} ).catch( function ( err ) {
 		console.error( err )
@@ -73,17 +90,15 @@ function DB( opts ) {
 	} )
 
 
+
+
+
+
+
+
+
+
 }
-
-DB.prototype.initGeo = function () {
-	console.warn( 'INITGEO >' )
-
-
-
-
-
-}
-
 
 DB.prototype.insert = function ( doc ) {
 	console.log( 'INSERT > doc >', doc )

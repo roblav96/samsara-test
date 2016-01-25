@@ -1,6 +1,7 @@
 //
 
 var _$db = require( '../../../app/db.js' )
+var _$http = require( '../../../app/http.js' )
 var _$utils = require( '../../../app/utils.js' )
 var _$samsara = require( '../../../app/samsara.js' )
 
@@ -10,11 +11,11 @@ module.exports = {
 	template: require( './about-template.html' ),
 
 	ready: function () {
-		
-		console.log( '_$db >', _$db )
-		
+
+		console.info( 'about > _$db >', _$db )
+
 		// _$db.save('yayy')
-		
+
 		// console.log( '_$db.temp >', JSON.stringify( _$db.temp, true, 4 ) )
 
 		// _$samsara.sBar.update( [ {
@@ -83,10 +84,50 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			_$utils.events.emit( 'samsara.mMenu.open' )
+			// _$utils.events.emit( 'samsara.mMenu.open' )
+
+			var d = {
+				uname: 'rob',
+				pass: 'abc123'
+			}
+
+			_$http.post( '/public/login', d, function ( err, response ) {
+				if ( err ) {
+					console.error( err )
+					return
+				}
+
+				_$db.putitlogin( response )
+
+			} )
+
+
+
+
+
+
+
+
 		},
 		dev2: function () {
-			_$utils.events.emit( 'samsara.mMenu.close' )
+			// _$utils.events.emit( 'samsara.mMenu.close' )
+
+			var d = {
+				stamp: 1
+			}
+
+			_$http.post( '/socket/update', d, function ( err, response ) {
+				if ( err ) {
+					console.error( err )
+					return
+				}
+
+				_$db.putitsocket( response )
+
+			} )
+
+
+
 		},
 		dev3: function () {
 			console.warn( 'dev3' )

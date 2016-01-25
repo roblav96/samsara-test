@@ -5,7 +5,7 @@
 ===============================*/
 
 window.shimIndexedDB.__useShim()
-window.shimIndexedDB.__debug( true )
+window.shimIndexedDB.__debug( false )
 
 const ENV_DEVELOPMENT = true
 const ENV_PRODUCTION = false
