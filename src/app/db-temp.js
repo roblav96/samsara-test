@@ -5,6 +5,7 @@ var dexie = require( './db-dexie.js' )
 var _$utils = require( './utils.js' )
 
 
+
 /*===========================
 =            _$DB           =
 ===========================*/
@@ -40,24 +41,24 @@ function Temp() {
 		opts: this.opts,
 		loki: this.loki,
 		// xid: xid
-		xid: 'cel'
+		xid: 'rob'
 	}
 
 	this.loaded = Promise.resolve().bind( that ).then( function () {
 		return dexie.contacts.toArray()
-	} ).then( function ( docs ) {
+	} ).then( function ( contacts ) {
 
-		this.docs = docs
-		this.docs.push( {
+		this.contacts = contacts
+		this.contacts.push( {
 			uname: this.xid
 		} )
 
-		console.log( 'this.docs >', JSON.stringify( this.docs, true, 4 ) )
+		console.log( 'this.contacts >', JSON.stringify( this.contacts, true, 4 ) )
 
 		this.proms = []
-		var i, len = this.docs.length
+		var i, len = this.contacts.length
 		for ( i = 0; i < len; i++ ) {
-			this.proms.push( dexie.geo.where( 'xid' ).equals( this.docs[ i ].uname ).toArray() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
+			this.proms.push( dexie.geos.where( 'xid' ).equals( this.contacts[ i ].uname ).toArray() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
 		}
 
 		return Promise.all( this.proms )
@@ -75,27 +76,27 @@ function Temp() {
 			}
 		}
 
-		var i, len = this.docs.length
+		var i, len = this.contacts.length
 		for ( i = 0; i < len; i++ ) {
 			var insert = {
 				acc: null,
 				battery: 'N/A',
 				charging: 'N/A',
-				id: this.docs[ i ].id,
+				id: this.contacts[ i ].id,
 				pos: null,
 				quickie: false,
 				stamp: NaN,
-				uuid: this.docs[ i ].uname + NaN,
-				xid: this.docs[ i ].uname
+				uuid: this.contacts[ i ].uname + NaN,
+				xid: this.contacts[ i ].uname
 			}
 
-			if ( temps[ this.docs[ i ].uname ] ) {
-				insert = temps[ this.docs[ i ].uname ]
-				insert.id = this.docs[ i ].id
+			if ( temps[ this.contacts[ i ].uname ] ) {
+				insert = temps[ this.contacts[ i ].uname ]
+				insert.id = this.contacts[ i ].id
 				insert.quickie = false
 			}
 
-			console.log( 'insert >', JSON.stringify( insert, true, 4 ) )
+			// console.log( 'insert >', JSON.stringify( insert, true, 4 ) )
 
 			this.loki.insert( insert )
 		}

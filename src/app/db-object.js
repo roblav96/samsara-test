@@ -13,12 +13,14 @@ module.exports = DB
 
 function DB( opts ) {
 
-	this.cache = {
-		flush: false,
-		insert: [],
-		update: [],
-		remove: []
-	}
+	// this.cache = {
+	// 	flush: false,
+	// 	insert: [],
+	// 	update: [],
+	// 	remove: []
+	// }
+
+	// console.log( 'this >', this )
 
 	// {
 	// 	"name": "geo",
@@ -31,8 +33,16 @@ function DB( opts ) {
 	// }
 
 	this.opts = opts
-	
-	this.loki = new Loki.Collection( this.opts.name, {
+	this.db = this.opts.name
+
+	// this.cache[ this.db ] = {
+	// 	flush: false,
+	// 	insert: [],
+	// 	update: [],
+	// 	remove: []
+	// }
+
+	this.loki = new Loki.Collection( this.db, {
 		indices: this.opts.indices,
 		unique: this.opts.indices[ 0 ]
 	} )
@@ -50,19 +60,19 @@ function DB( opts ) {
 
 	this.loaded = Promise.resolve().bind( this ).then( function () {
 
-		if ( this.opts.name == 'geo' ) {
+		if ( this.db == 'geos' ) {
 			return null
 		}
 
-		if ( this.opts.name == 'activities' ) {
-			return dexie[ this.opts.name ].orderBy( 'stamp' ).reverse().limit( 50 ).toArray()
+		if ( this.db == 'activities' ) {
+			return dexie[ this.db ].orderBy( 'stamp' ).reverse().limit( 50 ).toArray()
 		}
 
-		return dexie[ this.opts.name ].toArray()
+		return dexie[ this.db ].toArray()
 
 	} ).then( function ( docs ) {
 
-		// console.warn( this.opts.name )
+		// console.warn( this.db )
 		// console.log( 'docs >', JSON.stringify( docs, true, 4 ) )
 		// console.log( 'this.loki.data >', JSON.stringify( this.loki.data, true, 4 ) )
 
@@ -76,7 +86,7 @@ function DB( opts ) {
 		this.loki.on( 'insert', this.insert.bind( this ) )
 		this.loki.on( 'update', this.update.bind( this ) )
 		this.loki.on( 'delete', this.remove.bind( this ) )
-		
+
 		return Promise.resolve()
 
 	} ).catch( function ( err ) {
@@ -86,15 +96,11 @@ function DB( opts ) {
 
 }
 
-
+DB.prototype.cFlush = []
+DB.prototype.cache = []
 
 DB.prototype.flush = function () {
-	this.cache = {
-		flush: true,
-		insert: [],
-		update: [],
-		remove: []
-	}
+	this.flush.push( this.db )
 	this.loki.removeDataOnly()
 	this.save()
 }
@@ -102,12 +108,16 @@ DB.prototype.flush = function () {
 DB.prototype.insert = function ( doc ) {
 	// console.log( 'INSERT > doc >', doc )
 
-	this.cache.insert.push( doc )
+	this.cache.push( {
+		db: this.db,
+		action: 'insert',
+		doc: doc
+	} )
 	this.save()
 
-	if ( this.opts.name == 'contacts' ) {
+	if ( this.db == 'contacts' ) {
 		_$utils.events.emit( 'db.temp.insert', doc )
-	} else if ( this.opts.name == 'activities' ) {
+	} else if ( this.db == 'activities' ) {
 		_$utils.events.emit( 'socketUpdate.activities', doc )
 	}
 
@@ -116,10 +126,14 @@ DB.prototype.insert = function ( doc ) {
 DB.prototype.update = function ( doc ) {
 	// console.log( 'UPDATE > doc >', doc )
 
-	this.cache.update.push( doc )
+	this.cache.push( {
+		db: this.db,
+		action: 'update',
+		doc: doc
+	} )
 	this.save()
 
-	if ( this.opts.name == 'activities' ) {
+	if ( this.db == 'activities' ) {
 		_$utils.events.emit( 'socketUpdate.activities' )
 	}
 
@@ -128,14 +142,18 @@ DB.prototype.update = function ( doc ) {
 DB.prototype.remove = function ( doc ) {
 	// console.log( 'REMOVE > doc >', doc )
 
-	if ( this.cache.flush == true ) {
+	if ( this.cFlush.indexOf( this.doc ) != -1 ) {
 		return
 	}
 
-	this.cache.remove.push( doc )
+	this.cache.push( {
+		db: this.db,
+		action: 'remove',
+		id: doc[ this.opts.indices[ 0 ] ]
+	} )
 	this.save()
 
-	if ( this.opts.name == 'contacts' ) {
+	if ( this.db == 'contacts' ) {
 		_$utils.events.emit( 'db.temp.remove', doc )
 	}
 
@@ -143,45 +161,54 @@ DB.prototype.remove = function ( doc ) {
 
 DB.prototype.save = _.debounce( function () {
 
-	var that = _.clone( this.cache )
-	that.opts = this.opts
-	that.t = _.now()
+	// console.warn( 'this.cFlush >', this.cFlush )
+	// console.warn( 'this.cache >', this.cache )
 
-	// console.warn( this.opts.name + ' > that >', JSON.stringify( that, true, 4 ) )
-
-	this.cache = {
-		flush: false,
-		insert: [],
-		update: [],
-		remove: []
+	var that = {
+		cFlush: _.uniq( this.cFlush ),
+		cache: this.cache,
+		len: this.cache.length,
+		t: _.now()
 	}
 
+	console.log( 'that >', that )
+
 	Promise.resolve().bind( that ).then( function () {
-		if ( this.flush == true ) {
-			return dexie[ this.opts.name ].delete()
-		} else {
-			return null
-		}
-	} ).then( function () {
 
-		return dexie.transaction( 'rw', dexie[ this.opts.name ], function ( db ) {
+		return dexie.transaction( 'rw', dexie.activities, dexie.boundaries, dexie.contacts, dexie.geos, function ( activities, boundaries, contacts, geos ) {
 
-			var i, len = this.insert.length
-			for ( i = 0; i < len; i++ ) {
-				var doc = _.omit( this.insert[ i ], '$loki', 'meta' )
-				doc.uuid = doc.xid + doc.stamp
-				db.add( doc )
+			var dex = {
+				activities: activities,
+				boundaries: boundaries,
+				contacts: contacts,
+				geos: geos
 			}
 
-			var i, len = this.update.length
+			var dbs = [
+				'activities',
+				'boundaries',
+				'contacts',
+				'geos'
+			]
+
+			var i, len = dbs.length
 			for ( i = 0; i < len; i++ ) {
-				var doc = _.omit( this.update[ i ], '$loki', 'meta' )
-				db.put( doc )
+				if ( this.cFlush.indexOf( dbs[ i ] ) != -1 ) {
+					console.warn( 'flushing' )
+					dex[ dbs[ i ] ].delete()
+				}
 			}
 
-			var i, len = this.remove.length
+			var i, len = this.cache.length
 			for ( i = 0; i < len; i++ ) {
-				db.delete( this.remove[ i ][ this.opts.indices[ 0 ] ] )
+				var doc = _.omit( this.cache[ i ].doc, '$loki', 'meta' )
+				if ( this.cache[ i ].action == 'insert' ) {
+					dex[ this.cache[ i ].db ].add( doc )
+				} else if ( this.cache[ i ].action == 'update' ) {
+					dex[ this.cache[ i ].db ].put( doc )
+				} else if ( this.cache[ i ].action == 'remove' ) {
+					dex[ this.cache[ i ].db ].delete( this.cache[ i ].id )
+				}
 			}
 
 		}.bind( this ) )
@@ -198,23 +225,8 @@ DB.prototype.save = _.debounce( function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	console.log( 'this.cache >', JSON.stringify( this.cache, true, 4 ) )
-
-}, 1000, {
-	maxWait: 3000
+}, 250, {
+	maxWait: 1000
 } )
 
 

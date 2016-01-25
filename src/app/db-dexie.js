@@ -5,7 +5,7 @@ var _$utils = require( './utils.js' )
 
 
 var version = 1
-var name = 'convoy.db_4'
+var name = 'convoy.db_7'
 var tables = [ {
 	name: 'contacts',
 	schema: 'id, uname'
@@ -16,7 +16,7 @@ var tables = [ {
 	name: 'activities',
 	schema: 'uuid, type, stamp, xid'
 }, {
-	name: 'geo',
+	name: 'geos',
 	schema: 'uuid, stamp, xid'
 } ]
 
@@ -40,7 +40,6 @@ dexie._tables = tables
 var that = {
 	dexie: dexie
 }
-
 Promise.resolve().bind( that ).then( function () {
 	return this.dexie.open()
 } ).catch( function ( err ) {

@@ -32,6 +32,36 @@ _$utils.events.once( 'db.opened', function () {
 }.bind( this ) )
 
 
+this.putit = function ( activities, contacts, boundaries, geos ) {
+	
+	console.log( 'activities >', activities )
+	console.log( 'contacts >', contacts )
+	console.log( 'boundaries >', boundaries )
+	console.log( 'geos >', geos )
+	
+	var i, len = activities.length
+	for ( i = 0; i < len; i++ ) {
+		this.activities.insert( activities[ i ] )
+	}
+	
+	var i, len = contacts.length
+	for ( i = 0; i < len; i++ ) {
+		this.contacts.insert( contacts[ i ] )
+	}
+	
+	var i, len = boundaries.length
+	for ( i = 0; i < len; i++ ) {
+		this.boundaries.insert( boundaries[ i ] )
+	}
+	
+	var i, len = geos.length
+	for ( i = 0; i < len; i++ ) {
+		this.geos.insert( geos[ i ] )
+	}
+
+}
+
+
 
 this.putitlogin = function ( response ) { // DEV for login
 	console.log( 'putitlogin > response >', response )
