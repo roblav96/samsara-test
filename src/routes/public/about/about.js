@@ -1,5 +1,6 @@
 //
 
+var _$utils = require( '../../../app/utils.js' )
 var _$samsara = require( '../../../app/samsara.js' )
 
 
@@ -75,10 +76,10 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			_$samsara.mMenu.open()
+			_$utils.events.emit( 'samsara.mMenu.open' )
 		},
 		dev2: function () {
-			_$samsara.mMenu.close()
+			_$utils.events.emit( 'samsara.mMenu.close' )
 		},
 		dev3: function () {
 			console.warn( 'dev3' )
@@ -86,7 +87,7 @@ module.exports = {
 
 		showTuts: function () {
 			var html = require( './about-tuts.html' )
-			// _$samsara.tuts.open( html )
+				// _$samsara.tuts.open( html )
 		}
 	}
 
