@@ -62,9 +62,9 @@ function DB( opts ) {
 
 	} ).then( function ( docs ) {
 
-		console.warn( this.opts.name )
-		console.log( 'docs >', JSON.stringify( docs, true, 4 ) )
-		console.log( 'this.loki.data >', JSON.stringify( this.loki.data, true, 4 ) )
+		// console.warn( this.opts.name )
+		// console.log( 'docs >', JSON.stringify( docs, true, 4 ) )
+		// console.log( 'this.loki.data >', JSON.stringify( this.loki.data, true, 4 ) )
 
 		if ( !_.isEmpty( docs ) ) {
 			var i, len = docs.length
@@ -100,7 +100,7 @@ DB.prototype.flush = function () {
 }
 
 DB.prototype.insert = function ( doc ) {
-	console.log( 'INSERT > doc >', doc )
+	// console.log( 'INSERT > doc >', doc )
 
 	this.cache.insert.push( doc )
 	this.save()
@@ -114,7 +114,7 @@ DB.prototype.insert = function ( doc ) {
 }
 
 DB.prototype.update = function ( doc ) {
-	console.log( 'UPDATE > doc >', doc )
+	// console.log( 'UPDATE > doc >', doc )
 
 	this.cache.update.push( doc )
 	this.save()
@@ -126,7 +126,7 @@ DB.prototype.update = function ( doc ) {
 }
 
 DB.prototype.remove = function ( doc ) {
-	console.log( 'REMOVE > doc >', doc )
+	// console.log( 'REMOVE > doc >', doc )
 
 	if ( this.cache.flush == true ) {
 		return
@@ -147,7 +147,7 @@ DB.prototype.save = _.debounce( function () {
 	that.opts = this.opts
 	that.t = _.now()
 
-	console.warn( this.opts.name + ' > that >', JSON.stringify( that, true, 4 ) )
+	// console.warn( this.opts.name + ' > that >', JSON.stringify( that, true, 4 ) )
 
 	this.cache = {
 		flush: false,
@@ -169,6 +169,7 @@ DB.prototype.save = _.debounce( function () {
 			var i, len = this.insert.length
 			for ( i = 0; i < len; i++ ) {
 				var doc = _.omit( this.insert[ i ], '$loki', 'meta' )
+				doc.uuid = doc.xid + doc.stamp
 				db.add( doc )
 			}
 

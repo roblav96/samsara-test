@@ -1,6 +1,7 @@
 //
 
 var DB = require( './db-object.js' )
+var Temp = require( './db-temp.js' )
 var dexie = require( './db-dexie.js' )
 var _$utils = require( './utils.js' )
 
@@ -15,9 +16,12 @@ _$utils.events.once( 'db.opened', function () {
 	for ( i = 0; i < len; i++ ) {
 		var db = new DB( tables[ i ] )
 		this[ tables[ i ].name ] = db.loki
-
 		proms.push( db.loaded )
 	}
+
+	var temp = new Temp()
+	this.temp = temp.loki
+	proms.push( temp.loaded )
 
 	Promise.all( proms ).then( function () {
 		_$utils.events.emit( 'db.ready' )

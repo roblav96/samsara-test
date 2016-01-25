@@ -9,31 +9,30 @@ var _$utils = require( './utils.js' )
 =            _$DB           =
 ===========================*/
 
-module.exports = DB
+module.exports = Temp
 
-function DB( opts ) {
+function Temp() {
 
-	// {
-	// 	"name": "geo",
-	// 	"schema": "uuid, stamp, xid",
-	// 	"indices": [
-	// 		"uuid",
-	// 		"stamp",
-	// 		"xid"
-	// 	]
-	// }
-
-	this.opts = opts
+	this.opts = {
+		name: 'temp',
+		indices: [ 'uuid', 'id', 'xid', 'stamp' ]
+	}
 
 	this.loki = new Loki.Collection( this.opts.name, {
 		indices: this.opts.indices,
 		unique: this.opts.indices[ 0 ]
 	} )
 
-	// var xid = Lockr.get( 'user.xid' )
-	// if ( _.isUndefined( xid ) ) {
-	// 	return
-	// }
+	this.loki.on( 'update', _.throttle( function () {
+		_$utils.events.emit( 'db.temp.update' )
+	}, 1000, {
+		trailing: true
+	} ) )
+
+	var xid = Lockr.get( 'user.xid' )
+	if ( _.isUndefined( xid ) ) {
+		// return
+	}
 
 
 
@@ -44,45 +43,64 @@ function DB( opts ) {
 		xid: 'cel'
 	}
 
-	Promise.resolve().bind( that ).then( function () {
-		return dexie[ this.opts.name ].toArray()
+	this.loaded = Promise.resolve().bind( that ).then( function () {
+		return dexie.contacts.toArray()
 	} ).then( function ( docs ) {
-		if ( _.isEmpty( docs ) ) { // dont load any geo positions into memory
-			throw new RangeError()
+
+		this.docs = docs
+		this.docs.push( {
+			uname: this.xid
+		} )
+
+		console.log( 'this.docs >', JSON.stringify( this.docs, true, 4 ) )
+
+		this.proms = []
+		var i, len = this.docs.length
+		for ( i = 0; i < len; i++ ) {
+			this.proms.push( dexie.geo.where( 'xid' ).equals( this.docs[ i ].uname ).toArray() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
 		}
 
-		if ( this.opts.name != 'geo' ) {
-			var i, len = docs.length
-			for ( i = 0; i < len; i++ ) {
-				this.loki.insert( docs[ i ] )
+		return Promise.all( this.proms )
+
+	} ).then( function ( geos ) {
+
+		console.log( 'geos >', JSON.stringify( geos, true, 4 ) )
+
+		var temps = {}
+		var i, len = geos.length
+		for ( i = 0; i < len; i++ ) {
+			if ( !_.isEmpty( geos[ i ][ 0 ] ) ) {
+				var geo = geos[ i ][ 0 ]
+				temps[ geo.xid ] = geo
+			}
+		}
+
+		var i, len = this.docs.length
+		for ( i = 0; i < len; i++ ) {
+			var insert = {
+				acc: null,
+				battery: 'N/A',
+				charging: 'N/A',
+				id: this.docs[ i ].id,
+				pos: null,
+				quickie: false,
+				stamp: NaN,
+				uuid: this.docs[ i ].uname + NaN,
+				xid: this.docs[ i ].uname
 			}
 
-			throw new RangeError()
+			if ( temps[ this.docs[ i ].uname ] ) {
+				insert = temps[ this.docs[ i ].uname ]
+				insert.id = this.docs[ i ].id
+				insert.quickie = false
+			}
+
+			console.log( 'insert >', JSON.stringify( insert, true, 4 ) )
+
+			this.loki.insert( insert )
 		}
 
-		/*===========================
-		=            GEO            =
-		===========================*/
-
-		return dexie.geo.where( 'xid' ).notEqual( this.xid ).count()
-
-	} ).then( function ( count ) {
-		if ( count == 0 ) {
-			throw new RangeError()
-		}
-
-		console.log( 'count >', count )
-
-
-
-
-
-	} ).catch( RangeError, function () {
-
-
-
-
-
+		return Promise.resolve()
 
 	} ).catch( function ( err ) {
 		console.error( err )
@@ -99,11 +117,6 @@ function DB( opts ) {
 
 
 }
-
-DB.prototype.insert = function ( doc ) {
-	console.log( 'INSERT > doc >', doc )
-}
-
 
 
 
