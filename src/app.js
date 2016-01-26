@@ -239,7 +239,7 @@ var dbReady = false
 var deviceReady = false
 
 var start = function () {
-	
+
 	console.warn( 'START VUE APP' )
 
 	if ( window.cordova ) {
@@ -284,7 +284,7 @@ var ready = function () {
 ===================================*/
 document.addEventListener( "DOMContentLoaded", function () {
 
-	_$samsara.init()
+	_$utils.events.emit( 'samsara.init' )
 
 	if ( window.cordova ) {
 		return

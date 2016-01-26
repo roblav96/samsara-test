@@ -70,8 +70,8 @@ module.exports = View.extend( {
 		this.opa = new Transitionable( 0 )
 
 		this.xTrans = this.x.map( function ( v ) {
-			var val = v
-			return Transform.translate( [ val, -449 ] )
+			var value = v
+			return Transform.translate( [ value, -449 ] )
 		} )
 
 		var i, len = this.temp.length

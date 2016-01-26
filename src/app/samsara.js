@@ -12,37 +12,22 @@ var sBar = require( './sbar.js' )
 
 
 
-var _$samsara = {}
-_$samsara.tuts = {}
-_$samsara.prog = {}
-_$samsara.mMenu = {}
-_$samsara.sMenu = {}
-_$samsara.sBar = {}
+this.tuts = {}
+this.prog = {}
+this.mMenu = {}
+this.sMenu = {}
+this.sBar = {}
 
-
-
-_$samsara.init = function () {
+var init = function () {
 
 	var context = new Context()
 	context.setPerspective( 1000 )
-
-	// _$samsara.tuts = new tuts( context )
-	// _$samsara.prog = new prog( context )
-
+	
 	var mMenu = new _mMenu()
+	
+	
+	
 	context.add( mMenu )
-	
-	// console.log( 'mMenu >', mMenu )
-	
-	_$samsara.mMenu.toggle = mMenu.toggle
-	_$samsara.mMenu.open = mMenu.open
-	_$samsara.mMenu.close = mMenu.close
-	
-	
-
-	// _$samsara.sMenu = new sMenu( context )
-	// _$samsara.sBar = new sBar( context )
-
 	context.mount( document.body )
 
 	/*=====  MAIN MENU  ======*/
@@ -62,15 +47,16 @@ _$samsara.init = function () {
 	// _$utils.events.on( 'samsara.fixMenus', _$samsara.fixMenus )
 
 }
+_$utils.events.on( 'samsara.init', init.bind( this ) )
 
 // document.addEventListener( "DOMContentLoaded", _$samsara.init )
 
-_$samsara.setGpuSettings = function ( bool, platform ) {
+this.setGpuSettings = function ( bool, platform ) {
 	console.warn( '_$samsara.setGpuSettings' )
 }
 
 
-_$samsara.fixMenus = function ( now ) {
+this.fixMenus = function ( now ) {
 	// _$samsara.mMenu.close( now )
 	// _$samsara.sMenu.close( now )
 	// _$samsara.tuts.close( now )
@@ -114,9 +100,7 @@ _$samsara.fixMenus = function ( now ) {
 
 
 
-
-
-module.exports = _$samsara
+module.exports = this
 
 
 

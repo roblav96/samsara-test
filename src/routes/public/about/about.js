@@ -84,9 +84,22 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			// _$utils.events.emit( 'samsara.mMenu.open' )
+			_$utils.events.emit( 'samsara.mMenu.open' )
+		},
+		dev2: function () {
+			_$utils.events.emit( 'samsara.mMenu.close' )
+		},
+		
+		dev3: function () {
+			console.warn( 'dev3' )
+		},
+		
+		showTuts: function () {
+			var html = require( './about-tuts.html' )
+				// _$samsara.tuts.open( html )
+		},
 
-
+		dev4: function () {
 			var contacts = [ {
 				"active": true,
 				"boundaries": [],
@@ -750,97 +763,7 @@ module.exports = {
 				"charging": true
 			} ]
 
-
-
-
-
-
-
-
-
-
-
-
 			_$db.putit( activities, contacts, boundaries, geos )
-			return
-
-
-			_$db.putitlogin( [ {
-				"active": true,
-				"boundaries": [],
-				"convoying": false,
-				"disabled": false,
-				"dname": "Laurie Laverty",
-				"fav": false,
-				"groups": [],
-				"id": "14579004-68a5-4f12-913f-e5d04a61b75a",
-				"uname": "ljlaverty",
-				"xid": "rob"
-			}, {
-				"active": true,
-				"boundaries": [],
-				"convoying": false,
-				"disabled": false,
-				"dname": "Marina",
-				"fav": false,
-				"groups": [],
-				"id": "de473bb0-a5da-46bf-87ad-e122e725328e",
-				"uname": "marina",
-				"xid": "rob"
-			} ] )
-
-			return
-
-			var d = {
-				uname: 'rob',
-				pass: 'abc123'
-			}
-
-			_$http.post( '/public/login', d, function ( err, response ) {
-				if ( err ) {
-					console.error( err )
-					return
-				}
-
-				_$db.putitlogin( response )
-
-			} )
-
-
-
-
-
-
-
-
-		},
-		dev2: function () {
-			// _$utils.events.emit( 'samsara.mMenu.close' )
-
-			var d = {
-				stamp: 1
-			}
-
-			_$http.post( '/socket/update', d, function ( err, response ) {
-				if ( err ) {
-					console.error( err )
-					return
-				}
-
-				_$db.putitsocket( response )
-
-			} )
-
-
-
-		},
-		dev3: function () {
-			console.warn( 'dev3' )
-		},
-
-		showTuts: function () {
-			var html = require( './about-tuts.html' )
-				// _$samsara.tuts.open( html )
 		}
 	}
 
