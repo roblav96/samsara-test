@@ -116,7 +116,8 @@ DB.prototype.insert = function ( doc ) {
 	this.save()
 
 	if ( this.db == 'contacts' ) {
-		_$utils.events.emit( 'db.temp.insert', doc )
+		var send = _.pick( doc, 'id', 'uname' )
+		_$utils.events.emit( 'db.temp.insert', send )
 	} else if ( this.db == 'activities' ) {
 		_$utils.events.emit( 'socketUpdate.activities', doc )
 	}
@@ -154,7 +155,7 @@ DB.prototype.remove = function ( doc ) {
 	this.save()
 
 	if ( this.db == 'contacts' ) {
-		_$utils.events.emit( 'db.temp.remove', doc )
+		_$utils.events.emit( 'db.temp.remove', doc.uname )
 	}
 
 }

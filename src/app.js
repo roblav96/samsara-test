@@ -144,7 +144,7 @@ var _$App = Vue.extend( {
 		return data
 	},
 	ready: function () {
-		console.warn( 'SREADDYYYY' )
+		// console.warn( 'SREADDYYYY' )
 
 		var arr = [
 			'register',
@@ -239,7 +239,8 @@ var dbReady = false
 var deviceReady = false
 
 var start = function () {
-	console.warn( 'START' )
+	
+	console.warn( 'START VUE APP' )
 
 	if ( window.cordova ) {
 		window.plugins.nativepagetransitions.globalOptions.duration = 250

@@ -12,7 +12,7 @@ module.exports = {
 
 	ready: function () {
 
-		console.info( 'about > _$db >', _$db )
+		// console.info( 'about > _$db >', _$db )
 
 		// _$db.save('yayy')
 

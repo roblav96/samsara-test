@@ -25,8 +25,8 @@ function Temp() {
 	} )
 
 	this.loki.on( 'update', _.throttle( function () {
-		_$utils.events.emit( 'db.temp.update' )
-	}, 1000, {
+		_$utils.events.emit( 'db.temp.update' ) // for the map
+	}, 250, {
 		trailing: true
 	} ) )
 
@@ -50,23 +50,22 @@ function Temp() {
 
 		this.contacts = contacts
 		this.contacts.push( {
+			id: null,
 			uname: this.xid
 		} )
 
-		// console.log( 'this.contacts >', JSON.stringify( this.contacts, true, 4 ) )
+		var proms = []
+		_.forEach( this.contacts, function ( v, i ) {
+			proms.push( dexie.geos.orderBy( 'stamp' ).and( function ( prop ) {
+				return prop.xid == v.uname
+			} ).reverse().limit( 1 ).toArray() )
+		} )
 
-		this.proms = []
-		var i, len = this.contacts.length
-		for ( i = 0; i < len; i++ ) {
-			this.proms.push( dexie.geos.where( 'xid' ).equals( this.contacts[ i ].uname ).modify() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
-				// this.proms.push( dexie.geos.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
-		}
-
-		return Promise.all( this.proms )
+		return Promise.all( proms )
 
 	} ).then( function ( geos ) {
 
-		console.log( 'geos >', geos )
+		// console.warn( 'geos >', geos )
 
 		// console.log( 'geos >', JSON.stringify( geos, true, 4 ) )
 
@@ -113,10 +112,33 @@ function Temp() {
 
 
 
+	this.newTemp = function ( doc ) {
+		this.loki.insert( {
+			acc: null,
+			battery: 'N/A',
+			charging: 'N/A',
+			id: doc.id,
+			pos: null,
+			quickie: false,
+			stamp: NaN,
+			uuid: doc.uname + NaN,
+			xid: doc.uname
+		} )
+	}
+	_$utils.events.on( 'db.temp.insert', this.newTemp.bind( this ) )
 
 
 
+	this.removeTemp = function ( uname ) {
+		var cont = this.loki.find( {
+			xid: uname
+		} )
 
+		if ( cont[ 0 ] ) {
+			this.loki.remove( cont[ 0 ] )
+		}
+	}
+	_$utils.events.on( 'db.temp.remove', this.removeTemp.bind( this ) )
 
 
 
