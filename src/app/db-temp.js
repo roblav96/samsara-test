@@ -53,19 +53,22 @@ function Temp() {
 			uname: this.xid
 		} )
 
-		console.log( 'this.contacts >', JSON.stringify( this.contacts, true, 4 ) )
+		// console.log( 'this.contacts >', JSON.stringify( this.contacts, true, 4 ) )
 
 		this.proms = []
 		var i, len = this.contacts.length
 		for ( i = 0; i < len; i++ ) {
-			this.proms.push( dexie.geos.where( 'xid' ).equals( this.contacts[ i ].uname ).toArray() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
+			this.proms.push( dexie.geos.where( 'xid' ).equals( this.contacts[ i ].uname ).modify() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
+				// this.proms.push( dexie.geos.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() ) //.orderBy( 'stamp' ).reverse().limit( 1 ).toArray() )
 		}
 
 		return Promise.all( this.proms )
 
 	} ).then( function ( geos ) {
 
-		console.log( 'geos >', JSON.stringify( geos, true, 4 ) )
+		console.log( 'geos >', geos )
+
+		// console.log( 'geos >', JSON.stringify( geos, true, 4 ) )
 
 		var temps = {}
 		var i, len = geos.length

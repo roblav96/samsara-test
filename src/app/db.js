@@ -34,10 +34,10 @@ _$utils.events.once( 'db.opened', function () {
 
 this.putit = function ( activities, contacts, boundaries, geos ) {
 	
-	console.log( 'activities >', activities )
-	console.log( 'contacts >', contacts )
-	console.log( 'boundaries >', boundaries )
-	console.log( 'geos >', geos )
+	// console.log( 'activities >', activities )
+	// console.log( 'contacts >', contacts )
+	// console.log( 'boundaries >', boundaries )
+	// console.log( 'geos >', geos )
 	
 	var i, len = activities.length
 	for ( i = 0; i < len; i++ ) {

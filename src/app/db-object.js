@@ -106,7 +106,7 @@ DB.prototype.flush = function () {
 }
 
 DB.prototype.insert = function ( doc ) {
-	// console.log( 'INSERT > doc >', doc )
+	console.log( 'INSERT > doc >', doc )
 
 	this.cache.push( {
 		db: this.db,
@@ -161,8 +161,8 @@ DB.prototype.remove = function ( doc ) {
 
 DB.prototype.save = _.debounce( function () {
 
-	// console.warn( 'this.cFlush >', this.cFlush )
-	// console.warn( 'this.cache >', this.cache )
+	console.warn( 'this.cFlush >', this.cFlush )
+	console.warn( 'this.cache >', this.cache )
 
 	var that = {
 		cFlush: _.uniq( this.cFlush ),
@@ -170,8 +170,6 @@ DB.prototype.save = _.debounce( function () {
 		len: this.cache.length,
 		t: _.now()
 	}
-
-	console.log( 'that >', that )
 
 	Promise.resolve().bind( that ).then( function () {
 
@@ -199,24 +197,36 @@ DB.prototype.save = _.debounce( function () {
 				}
 			}
 
-			var i, len = this.cache.length
+			// console.log( 'this.len >', this.len )
+			// console.log( 'this.cache.length >', this.cache.length )
+
+			var i, len = this.len
 			for ( i = 0; i < len; i++ ) {
 				var doc = _.omit( this.cache[ i ].doc, '$loki', 'meta' )
 				if ( this.cache[ i ].action == 'insert' ) {
-					dex[ this.cache[ i ].db ].add( doc )
+					dex[ this.cache[ i ].db ].add( doc ).catch( function () {} )
 				} else if ( this.cache[ i ].action == 'update' ) {
-					dex[ this.cache[ i ].db ].put( doc )
+					dex[ this.cache[ i ].db ].put( doc ).catch( function () {} )
 				} else if ( this.cache[ i ].action == 'remove' ) {
-					dex[ this.cache[ i ].db ].delete( this.cache[ i ].id )
+					dex[ this.cache[ i ].db ].delete( this.cache[ i ].id ).catch( function () {} )
 				}
 			}
 
+			console.log( '_.now() - this.t >', _.now() - this.t )
+
+			return this.len
+
 		}.bind( this ) )
 
-	} ).then( function ( idk ) {
-		console.log( 'idk >', idk )
+	} ).bind( this ).then( function ( len ) {
 
-		console.log( '_.now() - this.t >', _.now() - this.t )
+		console.warn( 'SAVE' )
+		console.log( 'len >', len )
+
+		this.cache = _.drop( this.cache, len )
+		this.cFlush = []
+
+		// console.log( 'leftovers > this.cache.length >', this.cache.length )
 
 	} ).catch( function ( err ) {
 		console.error( err )
