@@ -3,7 +3,10 @@
 var _$db = require( '../../../app/db.js' )
 var _$http = require( '../../../app/http.js' )
 var _$utils = require( '../../../app/utils.js' )
+
 var _$samsara = require( '../../../app/samsara.js' )
+// console.log( '_$samsara >', _$samsara )
+// var mMenu = _$samsara.mMenu
 
 
 
@@ -11,6 +14,9 @@ module.exports = {
 	template: require( './about-template.html' ),
 
 	ready: function () {
+
+		// console.dir( _$mMenu )
+
 
 		// console.info( 'about > _$db >', _$db )
 
@@ -84,16 +90,21 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			_$utils.events.emit( 'samsara.mMenu.open' )
+			console.log( '_$samsara >', _$samsara )
+			console.log( 'mMenu >', mMenu )
+			_$samsara.mMenu.open()
+			
+			// _$samsara.mMenu.open()
+			// _$utils.events.emit( 'samsara.mMenu.open' )
 		},
 		dev2: function () {
 			_$utils.events.emit( 'samsara.mMenu.close' )
 		},
-		
+
 		dev3: function () {
 			console.warn( 'dev3' )
 		},
-		
+
 		showTuts: function () {
 			var html = require( './about-tuts.html' )
 				// _$samsara.tuts.open( html )

@@ -22,17 +22,17 @@ var init = function () {
 
 	var context = new Context()
 	context.setPerspective( 1000 )
-	
-	var mMenu = new _mMenu()
-	
-	
-	
-	context.add( mMenu )
+
+	this.mMenu = new _mMenu()
+
+
+
+	context.add( this.mMenu )
 	context.mount( document.body )
 
 	/*=====  MAIN MENU  ======*/
-	// _$utils.events.on( 'samsara.mMenu.open', _$samsara.mMenu.open )
-	// _$utils.events.on( 'samsara.mMenu.close', _$samsara.mMenu.close )
+	// _$utils.events.on( 'samsara.mMenu.open', this.mMenu.open.bind( this ) )
+	// _$utils.events.on( 'samsara.mMenu.close', mMenu.close )
 	// _$utils.events.on( 'sos-bar-header', _$samsara.mMenu.sosBarHeader )
 	// _$utils.events.on( 'samsara.activities', _$samsara.mMenu.activities )
 

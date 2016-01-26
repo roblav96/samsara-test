@@ -20,6 +20,9 @@ var mMenu_SURF = require( './mmenu-surf.js' )
 module.exports = View.extend( {
 
 	initialize: function () {
+		
+		// console.warn( 'mmenu init' )
+		
 		this.wWidth = window.innerWidth
 		this.wHeight = window.innerHeight
 
@@ -97,7 +100,8 @@ module.exports = View.extend( {
 		} ).add( this.layout )
 
 
-
+		// _$utils.events.on( 'samsara.mMenu.open', this.open.bind( this ) )
+		// _$utils.events.on( 'samsara.mMenu.close', this.close.bind( this ) )
 
 
 	},
