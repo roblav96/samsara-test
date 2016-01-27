@@ -8,8 +8,7 @@ var Context = Samsara.DOM.Context
 var _prog = require( './prog/prog.js' )
 var _mMenu = require( './mmenu/mmenu.js' )
 var _sMenu = require( './smenu/smenu.js' )
-// var sMenu = require( './smenu.js' )
-// var sBar = require( './sbar.js' )
+var _sBar = require( './sbar/sbar.js' )
 
 
 
@@ -28,8 +27,10 @@ var init = function () {
 	// context.add( this.prog )
 	// this.mMenu = new _mMenu()
 	// context.add( this.mMenu )
-	this.sMenu = new _sMenu()
-	context.add( this.sMenu )
+	// this.sMenu = new _sMenu()
+	// context.add( this.sMenu )
+	this.sBar = new _sBar()
+	context.add( this.sBar )
 
 
 
