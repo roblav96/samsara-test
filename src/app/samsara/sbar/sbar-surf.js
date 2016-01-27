@@ -33,17 +33,30 @@ module.exports = View.extend( {
 		} )
 
 		this.scales = new Transitionable( 1 )
+		this.jumps = new Transitionable( 0 )
 
 		this.clickHold = null
 		this.click = null
 		this.href = false
 		this.hidden = false
 
+		this.scalesTrans = this.scales.map( function ( v ) {
+			var value = v
+			return Transform.scale( [ value, value ] )
+		} )
+		this.jumpsTrans = this.jumps.map( function ( v ) {
+			var value = v
+			return Transform.translateY( value )
+		} )
+
 		this.add( {
-			transform: this.scales.map( function ( v ) {
-				var value = v
-				return Transform.scale( [ value, value ] )
-			} )
+			transform: Transform.compose( this.scalesTrans, this.jumpsTrans )
+
+			// } ).add( {
+			// 	transform: this.scales.map( function ( v ) {
+			// 		var value = v
+			// 		return Transform.scale( [ value, value ] )
+			// 	} )
 		} ).add( this.surf )
 
 	},
@@ -57,7 +70,7 @@ module.exports = View.extend( {
 
 	doClickFn: function () {
 		if ( this.href == true ) {
-			this.scales.set( 1.25 )
+			this.scales.reset( 1.25 )
 
 			Timer.after( function () {
 				this.click()
@@ -65,33 +78,36 @@ module.exports = View.extend( {
 					this.scales.set( 1 )
 				}.bind( this ), 5 )
 			}.bind( this ), 5 )
-			return
-		}
 
-		this.click()
-		this.scales.set( 1.25, {
-			duration: 100,
-			curve: Curves.easeOutBounce
-		}, function () {
-			this.scales.set( 1, {
+		} else {
+			this.click()
+			this.scales.set( 1.25, {
 				duration: 100,
-				curve: Curves.easeIn
-			} )
-		}.bind( this ) )
-
-		return
+				curve: Curves.easeOutBounce
+			}, function () {
+				this.scales.set( 1, {
+					duration: 100,
+					curve: Curves.easeIn
+				} )
+			}.bind( this ) )
+		}
 	},
 
-	touched: function () {
+	doClickHoldFn: function () {
+		navigator.vibrate( 50 )
+		this.clickHold()
 
-		this.scales.reset( 1.2 )
-		this.click()
-
+		this.scales.reset( 1.5 )
 		this.scales.set( 1, {
-			duration: 100
-		}, function () {
-			_$utils.events.emit( 'samsara.sMenu.close' )
-		}.bind( this ) )
+			duration: 1000,
+			curve: Curves.outBounce
+		} )
+
+		this.jumps.reset( -this.height )
+		this.jumps.set( 0, {
+			duration: 1000,
+			curve: Curves.outBounce
+		} )
 	},
 
 	resetClasses: function ( color ) {

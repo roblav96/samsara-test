@@ -36,7 +36,7 @@ module.exports = View.extend( {
 			direction: 0
 		} )
 
-		this.input = new TouchInput( {
+		this.input = new MouseInput( {
 			direction: TouchInput.DIRECTION.X,
 			scale: 1.5
 		} )
@@ -86,7 +86,17 @@ module.exports = View.extend( {
 
 			var x = pay.clientX
 			this.timeout = Timer.after( function () {
-				this.clickHoldFn( x )
+				Timer.clear( this.timeout )
+				this.timeout = null
+
+				var abs = Math.abs( this.xAccu.get() ) + Math.abs( this.yAccu.get() )
+				if ( abs < this.clickThreshold && this.didClick == false && this.touching == true ) {
+					var i = this.getSurfByPos( x )
+					if ( _.isFunction( this.surfs[ i ].clickHold ) ) {
+						this.didClick = true
+						this.surfs[ i ].doClickHoldFn()
+					}
+				}
 			}.bind( this ), 25 )
 
 			_$utils.events.emit( 'samsara.mMenu.close' )
@@ -101,10 +111,10 @@ module.exports = View.extend( {
 				var i = this.getSurfByPos( pay.clientX )
 				if ( _.isFunction( this.surfs[ i ].click ) ) {
 					this.didClick = true
-					this.surfs[ i ].doClick()
+					this.surfs[ i ].doClickFn()
 				}
 			}
-			
+
 			if ( this.timeout ) {
 				Timer.clear( this.timeout )
 				this.timeout = null
@@ -119,14 +129,11 @@ module.exports = View.extend( {
 				return
 			}
 
-			var y = Math.abs( pay )
-			if ( y >= this.height ) {
+			var abs = Math.abs( pay )
+			if ( abs >= this.height ) {
 				_$utils.events.emit( 'samsara.mMenu.open' )
 				this.didClick = true
-				this.centerIt()
-				return
 			}
-
 		}.bind( this ) )
 
 		this.xAccu.on( 'update', function ( pay ) {
@@ -241,13 +248,6 @@ module.exports = View.extend( {
 			duration: 250,
 			curve: Curves.outBack
 		} )
-	},
-
-	clickHoldFn: function ( x ) {
-		Timer.clear( this.timeout )
-		this.timeout = null
-
-		console.log( 'x >', x )
 	},
 
 	update: function ( temp ) {
