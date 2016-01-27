@@ -572,11 +572,11 @@ body {
     height: 88px !important;
 }
 
-.button:active,
-button:active {
+/*.button:active,*/
+/*button:active {*/
     /*text-transform: uppercase;*/
-    color: black !important;
-}
+    /*color: black !important;*/
+/*}*/
 
 .button-dev {
     position: fixed;

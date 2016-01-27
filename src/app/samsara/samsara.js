@@ -5,8 +5,9 @@ var Samsara = require( 'samsarajs' )
 var Context = Samsara.DOM.Context
 
 // var tuts = require( './tuts.js' )
-// var prog = require( './prog.js' )
+var _prog = require( './prog/prog.js' )
 var _mMenu = require( './mmenu/mmenu.js' )
+var _sMenu = require( './smenu/smenu.js' )
 // var sMenu = require( './smenu.js' )
 // var sBar = require( './sbar.js' )
 
@@ -23,11 +24,15 @@ var init = function () {
 	var context = new Context()
 	context.setPerspective( 1000 )
 
-	this.mMenu = new _mMenu()
+	// this.prog = new _prog()
+	// context.add( this.prog )
+	// this.mMenu = new _mMenu()
+	// context.add( this.mMenu )
+	this.sMenu = new _sMenu()
+	context.add( this.sMenu )
 
 
 
-	context.add( this.mMenu )
 	context.mount( document.body )
 
 	/*=====  MAIN MENU  ======*/

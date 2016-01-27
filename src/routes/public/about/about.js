@@ -5,8 +5,8 @@ var _$http = require( '../../../app/http.js' )
 var _$utils = require( '../../../app/utils.js' )
 
 var _$samsara = require( '../../../app/samsara/samsara.js' )
-// console.log( '_$samsara >', _$samsara )
-// var mMenu = require( '../../../app/samsara.js' ).mMenu
+	// console.log( '_$samsara >', _$samsara )
+	// var mMenu = require( '../../../app/samsara.js' ).mMenu
 
 
 
@@ -93,17 +93,80 @@ module.exports = {
 			// console.log( '_$samsara >', _$samsara )
 			// console.log( 'mMenu >', mMenu )
 			// _$samsara.mMenu.open()
-			
-			_$samsara.mMenu.open()
+
+			// _$samsara.prog.start()
+			// _$samsara.mMenu.open()
 			// _$utils.events.emit( 'samsara.mMenu.open' )
+
+			var temp = [ {
+				_text: "Back",
+				_icon: "ion-arrow-left-c",
+				_click: function () {
+					console.warn( 'go back' )
+				}.bind( this )
+			}, {
+				_text: "Boundaries",
+				_icon: "ion-log-out",
+				_click: function () {
+					console.warn( 'boundaries' )
+				}.bind( this )
+			}, {
+				_text: "Goto Map",
+				_icon: "ion-android-expand",
+				_href: true,
+				_click: function () {
+					console.warn( 'map' )
+				}.bind( this )
+			}, {
+				_text: "Activities",
+				_icon: "ion-ios-pulse-strong",
+				_href: true,
+				_click: function () {
+					console.warn( 'Activities' )
+				}.bind( this )
+			}, {
+				_text: "Submit",
+				_icon: "ion-checkmark done",
+				_click: function () {
+					console.warn( 'Submit' )
+				}.bind( this )
+			}, {
+				_text: "Submit",
+				_icon: "ion-checkmark done",
+				_click: function () {
+					console.warn( 'Submit' )
+				}.bind( this )
+			}, {
+				_text: "Submit",
+				_icon: "ion-checkmark done",
+				_click: function () {
+					console.warn( 'Submit' )
+				}.bind( this )
+			}, {
+				_text: "More Actions",
+				_icon: "ion-android-more-vertical",
+				_click: function () {
+					console.warn( 'smenu' )
+				}.bind( this )
+			} ]
+
+			_$samsara.sMenu.open( temp )
+
+
+
+
+
+
 		},
 		dev2: function () {
-			_$samsara.mMenu.close()
-			// _$utils.events.emit( 'samsara.mMenu.close' )
+			// _$samsara.prog.stop()
+			// _$samsara.mMenu.close()
+			_$samsara.sMenu.close()
+				// _$utils.events.emit( 'samsara.mMenu.close' )
 		},
 
 		dev3: function () {
-			console.warn( 'dev3' )
+			_$samsara.prog.error()
 		},
 
 		showTuts: function () {
