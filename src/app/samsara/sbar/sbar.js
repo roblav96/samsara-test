@@ -104,7 +104,7 @@ module.exports = View.extend( {
 			if ( this.touching == false || this.stopDragging == true ) {
 				return
 			}
-			
+
 			var y = Math.abs( pay )
 			if ( y >= this.height ) {
 				_$utils.events.emit( 'samsara.mMenu.open' )
@@ -120,6 +120,63 @@ module.exports = View.extend( {
 			if ( this.touching == false || this.stopDragging == true ) {
 				return
 			}
+
+			if ( Math.abs( pay ) >= this.width ) {
+				if ( pay > 0 ) {
+
+					// if ( _.isFunction( this.surfs[ 0 ].surf.click ) ) {
+					var classes = this.surfs[ 0 ].surf.getClassList()
+					if ( classes.indexOf( 'sBar-active' ) == -1 ) {
+						this.surfs[ 0 ].surf.addClass( 'sBar-active' )
+					}
+
+					this.didClick = true
+					this.stopDragging = true
+
+					// if ( this.temp[ 0 ].href != true ) {
+					// 	this.temp[ 0 ].click()
+					// 	Timer.after( function () {
+					// 		this.centerIt()
+					// 	}.bind( this ), 5 )
+					// 	return
+					// }
+
+					Timer.after( function () {
+							// this.temp[ 0 ].click()
+							this.centerIt()
+						}.bind( this ), 5 )
+						// }
+
+				} else {
+
+					if ( _.isFunction( this.temp[ 5 ].click ) ) {
+						var classes = this.surfs[ 5 ].surf.getClassList()
+						if ( classes.indexOf( 'sBar-active' ) == -1 ) {
+							this.surfs[ 5 ].surf.addClass( 'sBar-active' )
+						}
+
+						this.didClick = true
+						this.stopDragging = true
+
+						if ( this.temp[ 5 ].href != true ) {
+							this.temp[ 5 ].click()
+							Timer.after( function () {
+								this.centerIt()
+							}.bind( this ), 5 )
+							return
+						}
+
+						Timer.after( function () {
+							this.temp[ 5 ].click()
+								// Timer.after( function () {
+								// 	this.centerIt( true )
+								// }.bind( this ), 5 )
+						}.bind( this ), 5 )
+
+					}
+				}
+			}
+
 
 
 
@@ -145,12 +202,13 @@ module.exports = View.extend( {
 	},
 
 	centerIt: function ( now ) {
+		this.touching = false
+		this.x.halt()
 		this.x.reset( this.xAccu.get() )
 		this.x.set( 0, {
 			duration: 250,
 			curve: Curves.outBack
 		} )
-		this.touching = false
 	},
 
 	clickHoldFn: function ( x ) {
@@ -207,13 +265,13 @@ module.exports = View.extend( {
 
 		}
 
-		// this.surfs[ 0 ].setClasses( [] )
-		// this.surfs[ 5 ].setClasses( [] )
+		this.surfs[ 0 ].surf.setClasses( [ 'samsara-surface' ] )
+		this.surfs[ 5 ].surf.setClasses( [ 'samsara-surface' ] )
 
-		// this.surfs[ 0 ].addClass( [ 'sBar-' + temp[ 0 ]._color ] )
-		// if ( temp[ 5 ]._color ) {
-		// 	this.surfs[ 5 ].addClass( [ 'sBar-' + temp[ 5 ]._color ] )
-		// }
+		this.surfs[ 0 ].surf.addClass( [ 'sBar-' + temp[ 0 ]._color ] )
+		if ( temp[ 5 ]._color ) {
+			this.surfs[ 5 ].surf.addClass( [ 'sBar-' + temp[ 5 ]._color ] )
+		}
 
 
 
