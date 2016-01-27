@@ -31,16 +31,12 @@ module.exports = View.extend( {
 		this.height = 49
 		this.temp = [ {}, {}, {}, {}, {}, {} ]
 
-		this.clamp = function ( x, a, b ) {
-			return Math.min( Math.max( x, a ), b )
-		}
-
 		this.surfs = []
 		this.layout = new SequentialLayout( {
 			direction: 0
 		} )
 
-		this.input = new TouchInput( {
+		this.input = new MouseInput( {
 			direction: TouchInput.DIRECTION.X,
 			scale: 1.5
 		} )
@@ -86,16 +82,14 @@ module.exports = View.extend( {
 			this.yAccu.set( 0 )
 			this.x.reset()
 
-			console.log( 'pay >', pay )
-
 			this.didClick = false
 			this.stopDragging = false
 			this.touching = true
 
-			var x = pay.clientX
-			this.timeout = Timer.after( function () {
-				this.clickHoldFn( x )
-			}.bind( this ), 25 )
+			// var x = pay.clientX
+			// this.timeout = Timer.after( function () {
+			// 	this.clickHoldFn( x )
+			// }.bind( this ), 25 )
 
 			_$utils.events.emit( 'samsara.mMenu.close' )
 			_$utils.events.emit( 'samsara.sMenu.close' )
@@ -103,20 +97,31 @@ module.exports = View.extend( {
 		}.bind( this ) )
 
 		this.input.on( 'end', function () {
-			this.x.reset( this.xAccu.get() )
-			this.x.set( 0, {
-				duration: 250,
-				curve: Curves.outBack
-			} )
-			this.touching = false
+			this.centerIt()
+		}.bind( this ) )
+
+		this.yAccu.on( 'update', function ( pay ) {
+			if ( this.touching == false || this.stopDragging == true ) {
+				return
+			}
+			
+			var y = Math.abs( pay )
+			if ( y >= this.height ) {
+				_$utils.events.emit( 'samsara.mMenu.open' )
+				this.stopDragging = true
+				this.didClick = true
+				this.centerIt()
+				return
+			}
+
 		}.bind( this ) )
 
 		this.xAccu.on( 'update', function ( pay ) {
 			if ( this.touching == false || this.stopDragging == true ) {
 				return
 			}
-			
-			
+
+
 
 		}.bind( this ) )
 
@@ -137,6 +142,15 @@ module.exports = View.extend( {
 			} )
 		} ).add( this.layout )
 
+	},
+
+	centerIt: function ( now ) {
+		this.x.reset( this.xAccu.get() )
+		this.x.set( 0, {
+			duration: 250,
+			curve: Curves.outBack
+		} )
+		this.touching = false
 	},
 
 	clickHoldFn: function ( x ) {
