@@ -24,55 +24,55 @@ module.exports = {
 
 		// console.log( '_$db.temp >', JSON.stringify( _$db.temp, true, 4 ) )
 
-		// _$samsara.sBar.update( [ {
-		// 	_text: "Back",
-		// 	_icon: "ion-arrow-left-c",
-		// 	_color: 'assertive',
-		// 	_href: true,
-		// 	_click: function () {
-		// 		console.warn( 'go back' )
-		// 	}.bind( this )
-		// }, {
-		// 	_text: "Boundaries",
-		// 	_icon: "ion-log-out",
-		// 	_href: true,
-		// 	_click: function () {
-		// 		console.warn( 'boundaries' )
-		// 	}.bind( this )
-		// }, {
-		// 	_text: "Goto Map",
-		// 	_icon: "ion-android-expand",
-		// 	_href: true,
-		// 	_click: function () {
-		// 		console.warn( 'map' )
-		// 	}.bind( this ),
-		// 	_clickHold: function () {
-		// 		console.warn( 'map _clickHold' )
-		// 	}.bind( this )
-		// }, {
-		// 	_text: "Activities",
-		// 	_icon: "ion-ios-pulse-strong",
-		// 	_href: true,
-		// 	_click: function () {
-		// 		console.warn( 'Activities' )
-		// 	}.bind( this ),
-		// 	_clickHold: function () {
-		// 		console.warn( 'Activities _clickHold' )
-		// 	}.bind( this )
-		// }, {
-		// 	_text: "Submit",
-		// 	_icon: "ion-checkmark done",
-		// 	_click: function () {
-		// 		console.warn( 'Submit' )
-		// 	}.bind( this )
-		// }, {
-		// 	_text: "More Actions",
-		// 	_icon: "ion-android-more-vertical",
-		// 	_color: 'balanced',
-		// 	_click: function () {
-		// 		console.warn( 'smenu' )
-		// 	}.bind( this )
-		// } ] )
+		_$samsara.sBar.update( [ {
+			_text: "Back",
+			_icon: "ion-arrow-left-c",
+			_color: 'assertive',
+			_href: true,
+			_click: function () {
+				console.warn( 'go back' )
+			}.bind( this )
+		}, {
+			_text: "Boundaries",
+			_icon: "ion-log-out",
+			_href: true,
+			_click: function () {
+				console.warn( 'boundaries' )
+			}.bind( this )
+		}, {
+			_text: "Goto Map",
+			_icon: "ion-android-expand",
+			_href: true,
+			_click: function () {
+				console.warn( 'map' )
+			}.bind( this ),
+			_clickHold: function () {
+				console.warn( 'map _clickHold' )
+			}.bind( this )
+		}, {
+			_text: "Activities",
+			_icon: "ion-ios-pulse-strong",
+			_href: true,
+			_click: function () {
+				console.warn( 'Activities' )
+			}.bind( this ),
+			_clickHold: function () {
+				console.warn( 'Activities _clickHold' )
+			}.bind( this )
+		}, {
+			_text: "Submit",
+			_icon: "ion-checkmark done",
+			_click: function () {
+				console.warn( 'Submit' )
+			}.bind( this )
+		}, {
+			_text: "More Actions",
+			_icon: "ion-android-more-vertical",
+			_color: 'balanced',
+			_click: function () {
+				console.warn( 'smenu' )
+			}.bind( this )
+		} ] )
 
 
 		// this.showTuts()

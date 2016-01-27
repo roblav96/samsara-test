@@ -14,7 +14,8 @@ var TouchInput = Samsara.Inputs.TouchInput
 var SequentialLayout = Samsara.Layouts.SequentialLayout
 var Transitionable = Samsara.Core.Transitionable
 var Accumulator = Samsara.Streams.Accumulator
-var sMenu_SURF = require( './smenu-surf.js' )
+var Differential = Samsara.Streams.Differential
+var sBar_SURF = require( './sbar-surf.js' )
 
 
 
@@ -25,105 +26,183 @@ module.exports = View.extend( {
 		this.wWidth = window.innerWidth
 		this.wHeight = window.innerHeight
 
-		this.index = 301
-		this.shown = false
-		this.showing = false
-		this.temp = [ {}, {}, {}, {}, {}, {}, {}, {} ]
-		this.width = _.mathClamp( 250, 0, this.wWidth * 0.75 )
-		this.height = 50
+		this.index = 451
+		this.width = this.wWidth * 0.25
+		this.height = 49
+		this.temp = [ {}, {}, {}, {}, {}, {} ]
+
+		this.clamp = function ( x, a, b ) {
+			return Math.min( Math.max( x, a ), b )
+		}
 
 		this.surfs = []
 		this.layout = new SequentialLayout( {
-			direction: 1
+			direction: 0
 		} )
 
-		this.y = new Transitionable( 0 )
+		this.input = new TouchInput( {
+			direction: TouchInput.DIRECTION.X,
+			scale: 1.5
+		} )
 
 		var i, len = this.temp.length
 		for ( i = 0; i < len; i++ ) {
-			this.surfs[ i ] = new sMenu_SURF( {
+			this.surfs[ i ] = new sBar_SURF( {
 				index: i,
 				width: this.width,
 				height: this.height
 			} )
+			this.input.subscribe( this.surfs[ i ].surf )
 		}
 
 		this.layout.addItems( this.surfs )
 
+
+
+		this.x = new Transitionable( 0 )
+		this.xDiff = new Differential()
+		this.xDiff.subscribe( this.x )
+		this.xAccu = new Accumulator( 0, {
+			min: -this.width,
+			max: this.width
+		} )
+		this.xAccu.subscribe( this.input.pluck( 'delta' ) )
+		this.xAccu.subscribe( this.xDiff )
+
+		this.yDiff = new Differential( {
+			scale: 2
+		} )
+		this.yDiff.subscribe( this.input.pluck( 'clientY' ) )
+		this.yAccu = new Accumulator( 0 )
+		this.yAccu.subscribe( this.yDiff )
+
+		this.swipeYThreshold = 40
+		this.clickThreshold = 10
+		this.didClick = false
+		this.stopDragging = false
+		this.touching = false
+
+		this.input.on( 'start', function ( pay ) {
+			this.yAccu.set( 0 )
+			this.x.reset()
+
+			console.log( 'pay >', pay )
+
+			this.didClick = false
+			this.stopDragging = false
+			this.touching = true
+
+			var x = pay.clientX
+			this.timeout = Timer.after( function () {
+				this.clickHoldFn( x )
+			}.bind( this ), 25 )
+
+			_$utils.events.emit( 'samsara.mMenu.close' )
+			_$utils.events.emit( 'samsara.sMenu.close' )
+
+		}.bind( this ) )
+
+		this.input.on( 'end', function () {
+			this.x.reset( this.xAccu.get() )
+			this.x.set( 0, {
+				duration: 250,
+				curve: Curves.outBack
+			} )
+			this.touching = false
+		}.bind( this ) )
+
+		this.xAccu.on( 'update', function ( pay ) {
+			if ( this.touching == false || this.stopDragging == true ) {
+				return
+			}
+			
+			
+
+		}.bind( this ) )
+
+
+
+
+
+
+
+
 		this.add( {
-			align: [ 0.5, 1 ],
-			transform: Transform.translateY( 50 )
+			align: [ 0, 1 ],
+			transform: Transform.translate( [ -this.width * 0.5, 0 ] )
 		} ).add( {
-			transform: this.y.map( function ( v ) {
+			transform: this.xAccu.map( function ( v ) {
 				var value = v
-				return Transform.translateY( value )
+				return Transform.translateX( value )
 			} )
 		} ).add( this.layout )
 
 	},
 
-
-
-	toggle: function () {
-		if ( this.showing == true ) {
-			return
-		}
-
-		if ( this.shown == true ) {
-			this.close()
-		} else {
-			this.open()
-		}
+	clickHoldFn: function ( x ) {
+		console.log( 'x >', x )
 	},
 
-
-
-	open: function ( temp ) {
-		if ( this.shown == true ) {
-			return
-		}
-
-		// _$utils.events.emit( 'samsara.mMenu.close' )
-		this.showing = true
+	update: function ( temp ) {
 
 		var i, len = temp.length
 		for ( i = 0; i < len; i++ ) {
-			this.surfs[ i ].update( temp[ i ] )
+
+			// this.temp[ i ].href = null
+			// if ( temp[ i ]._href ) {
+			// 	this.temp[ i ].href = true
+			// }
+
+			var sendi = {}
+
+			var classes = ''
+			if ( i == 1 ) {
+				classes = ' sBar-left-' + temp[ 0 ]._color
+			}
+			if ( i == 4 && temp[ 5 ]._color ) {
+				classes = ' sBar-right-' + temp[ 5 ]._color
+			}
+
+			var icon = ''
+			if ( temp[ i ]._icon ) {
+				icon = ' ' + temp[ i ]._icon
+			}
+
+			var text = ''
+			if ( temp[ i ]._text ) {
+				text = temp[ i ]._text
+			}
+
+			sendi.content = '<div class="tabs tabs-icon-top' + classes + '"><a class="tab-item"><i class="icon' + icon + '"></i>' + text + '</a></div>'
+
+			// this.temp[ i ].click = null
+			// if ( temp[ i ]._click ) {
+			// 	this.temp[ i ].click = temp[ i ]._click
+			// }
+
+			// this.temp[ i ].clickHold = null
+			// if ( temp[ i ]._clickHold ) {
+			// 	this.temp[ i ].clickHold = temp[ i ]._clickHold
+			// }
+
+			// if ( i >= 1 && i <= 4 && this.temp[ i ]._hidden == true ) {
+			// 	this.show( i )
+			// }
+
+			this.surfs[ i ].update( sendi )
+
 		}
 
-		this.y.set( -( 49 + ( ( len ) * 50 ) ), {
-			duration: 200,
-			curve: 'easeOut'
-		}, function () {
-			this.shown = true
-			this.showing = false
-		}.bind( this ) )
-	},
+		// this.surfs[ 0 ].setClasses( [] )
+		// this.surfs[ 5 ].setClasses( [] )
+
+		// this.surfs[ 0 ].addClass( [ 'sBar-' + temp[ 0 ]._color ] )
+		// if ( temp[ 5 ]._color ) {
+		// 	this.surfs[ 5 ].addClass( [ 'sBar-' + temp[ 5 ]._color ] )
+		// }
 
 
 
-	close: function ( now ) {
-		if ( this.shown == false ) {
-			return
-		}
-
-		this.showing = true
-
-		if ( now == true ) {
-			this.y.set( 0 )
-			this.y.reset( 0 )
-			this.showing = false
-			this.shown = false
-			return
-		}
-
-		this.y.set( 0, {
-			duration: 250,
-			curve: 'easeIn'
-		}, function () {
-			this.shown = false
-			this.showing = false
-		}.bind( this ) )
 	}
 
 

@@ -26,7 +26,7 @@ module.exports = View.extend( {
 		this.setSize( [ opts.width, opts.height ] )
 
 		this.surf = new Surface( {
-			content: '<ul class="list"><li class="item">' + opts.index + ' and some</li></ul>',
+			content: '',
 			size: [ opts.width, opts.height ],
 			origin: [ 0.5, 1 ]
 		} )
@@ -38,8 +38,8 @@ module.exports = View.extend( {
 			return Transform.scale( [ value, value ] )
 		} )
 
-		this.surf.click = null
-		this.surf.on( 'mousedown', this.touched )
+		// this.surf.click = null
+		// this.surf.on( 'touchstart', this.touched )
 
 		this.add( {
 			transform: this.scalesTrans
@@ -48,16 +48,12 @@ module.exports = View.extend( {
 	},
 
 	update: function ( temp ) {
-		var content = '<ul class="list"><li class="item">' + temp._text + '</li></ul>'
-		if ( temp._icon ) {
-			content = '<ul class="list"><li class="item item-icon-left"><i class="icon ' + temp._icon + '"></i> ' + temp._text + '</li></ul>'
-		}
-		this.surf.setContent( content )
-
-		this.surf.click = null
-		if ( temp._click ) {
-			this.surf.click = temp._click
-		}
+		this.surf.setContent( temp.content )
+		
+		// this.surf.click = null
+		// if ( temp._click ) {
+		// 	this.surf.click = temp._click
+		// }
 
 	},
 
