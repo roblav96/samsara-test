@@ -6,7 +6,7 @@ var _$utils = require( '../../../app/utils.js' )
 
 var _$samsara = require( '../../../app/samsara.js' )
 // console.log( '_$samsara >', _$samsara )
-// var mMenu = _$samsara.mMenu
+// var mMenu = require( '../../../app/samsara.js' ).mMenu
 
 
 
@@ -90,15 +90,16 @@ module.exports = {
 
 	methods: {
 		dev1: function () {
-			console.log( '_$samsara >', _$samsara )
-			console.log( 'mMenu >', mMenu )
-			_$samsara.mMenu.open()
-			
+			// console.log( '_$samsara >', _$samsara )
+			// console.log( 'mMenu >', mMenu )
 			// _$samsara.mMenu.open()
+			
+			_$samsara.mMenu.open()
 			// _$utils.events.emit( 'samsara.mMenu.open' )
 		},
 		dev2: function () {
-			_$utils.events.emit( 'samsara.mMenu.close' )
+			_$samsara.mMenu.close()
+			// _$utils.events.emit( 'samsara.mMenu.close' )
 		},
 
 		dev3: function () {
