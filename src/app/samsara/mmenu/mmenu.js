@@ -95,7 +95,7 @@ module.exports = View.extend( {
 
 		this.add( {
 			align: [ 0, 1 ],
-			transform: Transform.translate( [ 0, -449 ] )
+			transform: Transform.translate( [ -1, -449 ] ) // -1 to fix the tiny bit on the screen
 			// opacity: this.opa
 		} ).add( {
 			transform: this.xTrans,

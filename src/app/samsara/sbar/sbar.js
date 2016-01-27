@@ -36,7 +36,7 @@ module.exports = View.extend( {
 			direction: 0
 		} )
 
-		this.input = new MouseInput( {
+		this.input = new TouchInput( {
 			direction: TouchInput.DIRECTION.X,
 			scale: 1.5
 		} )
@@ -44,7 +44,6 @@ module.exports = View.extend( {
 		var i, len = this.temp.length
 		for ( i = 0; i < len; i++ ) {
 			this.surfs[ i ] = new sBar_SURF( {
-				index: i,
 				width: this.width,
 				height: this.height
 			} )
@@ -141,68 +140,43 @@ module.exports = View.extend( {
 				return
 			}
 
-			if ( Math.abs( pay ) >= this.width ) {
-				if ( pay > 0 ) {
-
-					if ( _.isFunction( this.surfs[ 0 ].surf.click ) ) {
+			var payX = pay
+			if ( Math.abs( payX ) >= this.width ) {
+				if ( payX > 0 ) {
+					if ( _.isFunction( this.surfs[ 0 ].click ) ) {
 						var classes = this.surfs[ 0 ].surf.getClassList()
 						if ( classes.indexOf( 'sBar-active' ) == -1 ) {
 							this.surfs[ 0 ].surf.addClass( 'sBar-active' )
 						}
 
 						this.didClick = true
-
-						if ( this.temp[ 0 ].href != true ) {
-							this.temp[ 0 ].click()
+						if ( this.surfs[ 0 ].href == true ) {
 							Timer.after( function () {
-								this.centerIt()
+								this.surfs[ 0 ].click()
 							}.bind( this ), 5 )
 							return
 						}
-
-						Timer.after( function () {
-							this.temp[ 0 ].click()
-						}.bind( this ), 5 )
+						this.surfs[ 0 ].click()
 					}
-
 				} else {
-
-					if ( _.isFunction( this.temp[ 5 ].click ) ) {
+					if ( _.isFunction( this.surfs[ 5 ].click ) ) {
 						var classes = this.surfs[ 5 ].surf.getClassList()
 						if ( classes.indexOf( 'sBar-active' ) == -1 ) {
 							this.surfs[ 5 ].surf.addClass( 'sBar-active' )
 						}
 
 						this.didClick = true
-
-						if ( this.temp[ 5 ].href != true ) {
-							this.temp[ 5 ].click()
+						if ( this.surfs[ 5 ].href == true ) {
 							Timer.after( function () {
-								this.centerIt()
+								this.surfs[ 5 ].click()
 							}.bind( this ), 5 )
 							return
 						}
-
-						Timer.after( function () {
-							this.temp[ 5 ].click()
-								// Timer.after( function () {
-								// 	this.centerIt( true )
-								// }.bind( this ), 5 )
-						}.bind( this ), 5 )
-
+						this.surfs[ 5 ].click()
 					}
 				}
 			}
-
-
-
-
 		}.bind( this ) )
-
-
-
-
-
 
 
 
@@ -228,13 +202,14 @@ module.exports = View.extend( {
 		} else if ( _.inRange( posX, this.width * 3, this.width * 4 ) ) {
 			return 4
 		} else {
-			console.error( 'this.getSurfByPos >' )
-			console.error( 'WTF NOT IN RANGE???' )
+			console.error( 'this.getSurfByPos > WTF NOT IN RANGE???' )
 		}
 	},
 
 	centerIt: function ( now ) {
 		if ( now == true ) {
+			this.surfs[ 0 ].surf.removeClass( 'sBar-active' )
+			this.surfs[ 5 ].surf.removeClass( 'sBar-active' )
 			this.xAccu.set( 0 )
 			this.yAccu.set( 0 )
 			this.x.halt()
@@ -247,7 +222,10 @@ module.exports = View.extend( {
 		this.x.set( 0, {
 			duration: 250,
 			curve: Curves.outBack
-		} )
+		}, function () {
+			this.surfs[ 0 ].surf.removeClass( 'sBar-active' )
+			this.surfs[ 5 ].surf.removeClass( 'sBar-active' )
+		}.bind( this ) )
 	},
 
 	update: function ( temp ) {

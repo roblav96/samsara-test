@@ -171,7 +171,7 @@ module.exports = {
 
 		showTuts: function () {
 			var html = require( './about-tuts.html' )
-				// _$samsara.tuts.open( html )
+			_$samsara.tuts.open( html )
 		},
 
 		dev4: function () {

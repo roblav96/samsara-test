@@ -9,6 +9,7 @@ var _prog = require( './prog/prog.js' )
 var _mMenu = require( './mmenu/mmenu.js' )
 var _sMenu = require( './smenu/smenu.js' )
 var _sBar = require( './sbar/sbar.js' )
+var _tuts = require( './tuts/tuts.js' )
 
 
 
@@ -23,14 +24,16 @@ var init = function () {
 	var context = new Context()
 	context.setPerspective( 1000 )
 
-	// this.prog = new _prog()
-	// context.add( this.prog )
-	// this.mMenu = new _mMenu()
-	// context.add( this.mMenu )
-	// this.sMenu = new _sMenu()
-	// context.add( this.sMenu )
+	this.prog = new _prog()
+	context.add( this.prog )
+	this.mMenu = new _mMenu()
+	context.add( this.mMenu )
+	this.sMenu = new _sMenu()
+	context.add( this.sMenu )
 	this.sBar = new _sBar()
 	context.add( this.sBar )
+	this.tuts = new _tuts()
+	context.add( this.tuts )
 
 
 

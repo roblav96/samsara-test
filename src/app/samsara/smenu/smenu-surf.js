@@ -39,7 +39,7 @@ module.exports = View.extend( {
 		} )
 
 		this.surf.click = null
-		this.surf.on( 'mousedown', this.touched )
+		this.surf.on( 'touchstart', this.touched )
 
 		this.add( {
 			transform: this.scalesTrans

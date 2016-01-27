@@ -23,9 +23,7 @@ module.exports = View.extend( {
 
 	initialize: function ( opts ) {
 
-		this.index = opts.index
 		this.setSize( [ opts.width, opts.height ] )
-
 		this.surf = new Surface( {
 			content: '',
 			size: [ opts.width, opts.height ],
@@ -34,29 +32,23 @@ module.exports = View.extend( {
 
 		this.scales = new Transitionable( 1 )
 		this.jumps = new Transitionable( 0 )
+		this.jumping = false
 
 		this.clickHold = null
 		this.click = null
 		this.href = false
 		this.hidden = false
 
-		this.scalesTrans = this.scales.map( function ( v ) {
-			var value = v
-			return Transform.scale( [ value, value ] )
-		} )
-		this.jumpsTrans = this.jumps.map( function ( v ) {
-			var value = v
-			return Transform.translateY( value )
-		} )
-
 		this.add( {
-			transform: Transform.compose( this.scalesTrans, this.jumpsTrans )
-
-			// } ).add( {
-			// 	transform: this.scales.map( function ( v ) {
-			// 		var value = v
-			// 		return Transform.scale( [ value, value ] )
-			// 	} )
+			transform: this.scales.map( function ( v ) {
+				var value = v
+				return Transform.scale( [ value, value ] )
+			} )
+		} ).add( {
+			transform: this.jumps.map( function ( v ) {
+				var value = v
+				return Transform.translateY( value )
+			} )
 		} ).add( this.surf )
 
 	},
@@ -69,8 +61,12 @@ module.exports = View.extend( {
 	},
 
 	doClickFn: function () {
+		if ( this.jumping == true ) {
+			return
+		}
+		
 		if ( this.href == true ) {
-			this.scales.reset( 1.25 )
+			this.scales.set( 1.25 )
 
 			Timer.after( function () {
 				this.click()
@@ -83,17 +79,18 @@ module.exports = View.extend( {
 			this.click()
 			this.scales.set( 1.25, {
 				duration: 100,
-				curve: Curves.easeOutBounce
+				curve: 'easeOut'
 			}, function () {
 				this.scales.set( 1, {
 					duration: 100,
-					curve: Curves.easeIn
+					curve: 'easeIn'
 				} )
 			}.bind( this ) )
 		}
 	},
 
 	doClickHoldFn: function () {
+		this.jumping = true
 		navigator.vibrate( 50 )
 		this.clickHold()
 
@@ -103,11 +100,13 @@ module.exports = View.extend( {
 			curve: Curves.outBounce
 		} )
 
-		this.jumps.reset( -this.height )
+		this.jumps.reset( -this.options.height )
 		this.jumps.set( 0, {
 			duration: 1000,
 			curve: Curves.outBounce
-		} )
+		}, function () {
+			this.jumping = false
+		}.bind( this ) )
 	},
 
 	resetClasses: function ( color ) {
