@@ -284,7 +284,7 @@ var ready = function () {
 ===================================*/
 document.addEventListener( "DOMContentLoaded", function () {
 
-	_$utils.events.emit( 'samsara.init' )
+	// _$utils.events.emit( 'samsara.init' )
 
 	if ( window.cordova ) {
 		return

@@ -1,7 +1,7 @@
 //
 
-var _$utils = require( './utils.js' )
-var Curves = require( './Curves.js' )
+var _$utils = require( '../../utils.js' )
+var Curves = require( '../Curves.js' )
 var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
 var ContainerSurface = Samsara.DOM.ContainerSurface
@@ -74,7 +74,7 @@ module.exports = View.extend( {
 
 		this.xTrans = this.x.map( function ( v ) {
 			var value = v
-			return Transform.translate( [ value, -449 ] )
+			return Transform.translateX( value )
 		} )
 
 		var i, len = this.temp.length
@@ -95,8 +95,10 @@ module.exports = View.extend( {
 
 		this.add( {
 			align: [ 0, 1 ],
-			transform: this.xTrans,
+			transform: Transform.translate( [ 0, -449 ] ),
 			opacity: this.opa
+		} ).add( {
+			transform: this.xTrans,
 		} ).add( this.layout )
 
 

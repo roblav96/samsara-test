@@ -4,7 +4,7 @@ var _$db = require( '../../../app/db.js' )
 var _$http = require( '../../../app/http.js' )
 var _$utils = require( '../../../app/utils.js' )
 
-var _$samsara = require( '../../../app/samsara.js' )
+var _$samsara = require( '../../../app/samsara/samsara.js' )
 // console.log( '_$samsara >', _$samsara )
 // var mMenu = require( '../../../app/samsara.js' ).mMenu
 

@@ -1,6 +1,6 @@
 //
 
-var _$samsara = require( '../../../app/samsara.js' )
+var _$samsara = require( '../../../app/samsara/samsara.js' )
 
 module.exports = {
 	template: require( './register-template.html' ),

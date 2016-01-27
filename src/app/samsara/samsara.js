@@ -1,14 +1,14 @@
 //
 
-var _$utils = require( './utils.js' )
+var _$utils = require( '../utils.js' )
 var Samsara = require( 'samsarajs' )
 var Context = Samsara.DOM.Context
 
-var tuts = require( './tuts.js' )
-var prog = require( './prog.js' )
-var _mMenu = require( './mmenu.js' )
-var sMenu = require( './smenu.js' )
-var sBar = require( './sbar.js' )
+// var tuts = require( './tuts.js' )
+// var prog = require( './prog.js' )
+var _mMenu = require( './mmenu/mmenu.js' )
+// var sMenu = require( './smenu.js' )
+// var sBar = require( './sbar.js' )
 
 
 
@@ -47,7 +47,7 @@ var init = function () {
 	// _$utils.events.on( 'samsara.fixMenus', _$samsara.fixMenus )
 
 }
-_$utils.events.on( 'samsara.init', init.bind( this ) )
+document.addEventListener( "DOMContentLoaded", init.bind( this ) )
 
 // document.addEventListener( "DOMContentLoaded", _$samsara.init )
 
