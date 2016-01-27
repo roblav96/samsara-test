@@ -23,6 +23,7 @@ module.exports = View.extend( {
 
 	initialize: function ( opts ) {
 
+		this.index = opts.index
 		this.setSize( [ opts.width, opts.height ] )
 
 		this.surf = new Surface( {
@@ -30,31 +31,55 @@ module.exports = View.extend( {
 			size: [ opts.width, opts.height ],
 			origin: [ 0.5, 1 ]
 		} )
-		this.surf.index = opts.index
 
-		this.surf.scales = new Transitionable( 1 )
-		this.scalesTrans = this.surf.scales.map( function ( v ) {
-			var value = v
-			return Transform.scale( [ value, value ] )
-		} )
+		this.scales = new Transitionable( 1 )
 
-		// this.surf.click = null
-		// this.surf.on( 'touchstart', this.touched )
+		this.clickHold = null
+		this.click = null
+		this.href = false
+		this.hidden = false
 
 		this.add( {
-			transform: this.scalesTrans
+			transform: this.scales.map( function ( v ) {
+				var value = v
+				return Transform.scale( [ value, value ] )
+			} )
 		} ).add( this.surf )
 
 	},
 
 	update: function ( temp ) {
 		this.surf.setContent( temp.content )
-		
-		// this.surf.click = null
-		// if ( temp._click ) {
-		// 	this.surf.click = temp._click
-		// }
+		this.href = temp.href
+		this.click = temp.click
+		this.clickHold = temp.clickHold
+	},
 
+	doClickFn: function () {
+		if ( this.href == true ) {
+			this.scales.set( 1.25 )
+
+			Timer.after( function () {
+				this.click()
+				Timer.after( function () {
+					this.scales.set( 1 )
+				}.bind( this ), 5 )
+			}.bind( this ), 5 )
+			return
+		}
+
+		this.click()
+		this.scales.set( 1.25, {
+			duration: 100,
+			curve: Curves.easeOutBounce
+		}, function () {
+			this.scales.set( 1, {
+				duration: 100,
+				curve: Curves.easeIn
+			} )
+		}.bind( this ) )
+
+		return
 	},
 
 	touched: function () {
@@ -67,6 +92,23 @@ module.exports = View.extend( {
 		}, function () {
 			_$utils.events.emit( 'samsara.sMenu.close' )
 		}.bind( this ) )
+	},
+
+	resetClasses: function ( color ) {
+		this.surf.setClasses( [ 'samsara-surface' ] )
+		if ( color ) {
+			this.surf.addClass( [ 'sBar-' + color ] )
+		}
+	},
+
+	show: function () {
+		this.surf.removeClass( 'sbar-hide' )
+		this.hidden = false
+	},
+
+	hide: function () {
+		this.surf.addClass( 'sbar-hide' )
+		this.hidden = true
 	}
 
 
