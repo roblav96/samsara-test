@@ -18,6 +18,7 @@
     "cordova-plugin-crosswalk-webview",
     "cordova-plugin-device",
     "cordova-plugin-whitelist",
+    "cordova-plugin-livereload",
     "cordova-plugin-splashscreen",
     {
       "locator": "https://github.com/roblav96/SecureHTTP.git",
