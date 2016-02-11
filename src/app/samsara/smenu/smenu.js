@@ -2,7 +2,7 @@
 
 var _$utils = require( '../../utils.js' )
 var Curves = require( '../Curves.js' )
-var Samsara = require( 'samsarajs' )
+// var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
 var ContainerSurface = Samsara.DOM.ContainerSurface
 var Timer = Samsara.Core.Timer

@@ -1,7 +1,7 @@
 //
 
 var _$db = require( "./app/db.js" )
-// var _$samsara = require( "./app/samsara.js" )
+	// var _$samsara = require( "./app/samsara.js" )
 var _$utils = require( "./app/utils.js" )
 
 
@@ -86,6 +86,18 @@ _.mixin( {
 		numb = numb.substring( numb.length - 10, numb.length )
 		numb = numb.replace( /(\d{3})(\d{3})(\d{4})/, "$1-$2-$3" )
 		return numb
+	}
+} )
+
+_.mixin( {
+	'sMenuPrep': function ( temp ) {
+		var i, len = temp.length
+		for ( i = 0; i < len; i++ ) {
+			if ( temp[ i ]._click ) {
+				temp[ i ]._click = true
+			}
+		}
+		return temp
 	}
 } )
 

@@ -2,7 +2,7 @@
 
 var _$utils = require( '../../utils.js' )
 var Curves = require( '../Curves.js' )
-var Samsara = require( 'samsarajs' )
+// var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
 var ContainerSurface = Samsara.DOM.ContainerSurface
 var Transform = Samsara.Core.Transform
@@ -56,15 +56,19 @@ module.exports = View.extend( {
 
 		this.surf.click = null
 		if ( temp._click ) {
-			this.surf.click = temp._click
+			this.surf.click = true
 		}
 
 	},
 
 	touched: function () {
+		if ( !this.click ) {
+			return
+		}
 
 		this.scales.reset( 1.2 )
-		this.click()
+
+		_$utils.events.emit( 'samsara.sMenu.click', this.index )
 
 		this.scales.set( 1, {
 			duration: 100

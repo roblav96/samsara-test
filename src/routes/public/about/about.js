@@ -146,7 +146,8 @@ module.exports = {
 			// console.log( 'mMenu >', mMenu )
 			// _$samsara.mMenu.open()
 
-			// _$samsara.prog.start()
+			_$samsara.prog.start()
+			return
 			// _$samsara.mMenu.open()
 			// _$utils.events.emit( 'samsara.mMenu.open' )
 
@@ -202,13 +203,10 @@ module.exports = {
 				}.bind( this )
 			} ]
 
-			var temp = []
-			var i, len = this.sMenu.length
-			for ( i = 0; i < len; i++ ) {
-				temp[ i ] = _.omit( this.sMenu[ i ], '_click' )
-			}
+			var temp = _.sMenuPrep( this.sMenu )
 			console.log( 'temp >', temp )
-				// _$samsara.sMenu.open( temp )
+			_$samsara.sMenu.open( temp )
+			
 
 
 
@@ -217,9 +215,9 @@ module.exports = {
 
 		},
 		dev2: function () {
-			// _$samsara.prog.stop()
+			_$samsara.prog.stop()
 			// _$samsara.mMenu.close()
-			_$samsara.sMenu.close()
+			// _$samsara.sMenu.close()
 				// _$utils.events.emit( 'samsara.mMenu.close' )
 		},
 

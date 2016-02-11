@@ -2,7 +2,7 @@
 
 var _$utils = require( '../../utils.js' )
 var Curves = require( '../Curves.js' )
-var Samsara = require( 'samsarajs' )
+// var Samsara = require( 'samsarajs' )
 var Surface = Samsara.DOM.Surface
 var ContainerSurface = Samsara.DOM.ContainerSurface
 var Timer = Samsara.Core.Timer
@@ -36,7 +36,7 @@ module.exports = View.extend( {
 			direction: 0
 		} )
 
-		this.input = new TouchInput( {
+		this.input = new MouseInput( {
 			direction: TouchInput.DIRECTION.X,
 			scale: 1.5
 		} )
